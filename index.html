@@ -475,6 +475,21 @@
         </div>
       </div>
 
+      <!-- Action Buttons -->
+      <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 justify-center mb-8">
+        <button onclick="restartGame()" class="px-8 py-3 bg-retroGreen text-black font-pressStart text-xs border-2 border-white shadow-retroGreen hover:bg-white hover:shadow-retro active:translate-y-1 transition duration-200 cursor-pointer uppercase arcade-btn">
+          🕹️ PLAY AGAIN (เริ่มใหม่)
+        </button>
+      </div>
+
+      <!-- Review Section -->
+      <div id="review-section" class="text-left border-2 border-retroBorder bg-black/30 p-4 md:p-6 mb-8 rounded shadow-retro">
+        <h4 class="font-pressStart text-xs text-retroPink mb-4 tracking-wider border-b border-retroBorder pb-2">📋 แฟ้มคดีข้อที่ตอบผิด (Case Files of Infractions)</h4>
+        <div id="review-list" class="space-y-6 max-h-96 overflow-y-auto pr-2">
+          <!-- Dynamically populated via JS -->
+        </div>
+      </div>
+
       <script type="text/markdown" id="quiz-markdown">
 # สรุปข้อสอบกฎหมายดิจิทัลจากไฟล์ `law.zip`
 
@@ -2131,6 +2146,49 @@
       const pct = Math.round((state.score / state.questions.length) * 100);
       document.getElementById('final-percent').innerText = `${pct}%`;
       document.getElementById('final-combo').innerText = `${state.maxCombo}x`;
+
+      // Populate incorrect questions review
+      const reviewList = document.getElementById('review-list');
+      reviewList.innerHTML = '';
+      
+      let incorrectCount = 0;
+      state.questions.forEach((q, idx) => {
+        const userAnswer = state.userAnswers[idx];
+        if (userAnswer !== q.answer) {
+          incorrectCount++;
+          
+          const item = document.createElement('div');
+          item.className = "border-l-4 border-retroRed pl-4 py-2 space-y-2 border-b border-retroBorder/20 pb-4";
+          
+          // Find option texts
+          const userOpt = q.options.find(o => o.key === userAnswer);
+          const correctOpt = q.options.find(o => o.key === q.answer);
+          
+          const userText = userOpt ? `${userOpt.key}. ${userOpt.text}` : 'ไม่ได้ตอบ';
+          const correctText = correctOpt ? `${correctOpt.key}. ${correctOpt.text}` : '';
+          
+          item.innerHTML = `
+            <div class="font-pressStart text-[9px] text-retroYellow">ข้อที่ ${idx + 1} (${getCategory(q.question)})</div>
+            <div class="font-chakra text-sm font-semibold text-white">${escapeHTML(q.question)}</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs font-chakra pt-1">
+              <div class="text-retroRed">❌ คำตอบของคุณ: <span class="font-bold">${escapeHTML(userText)}</span></div>
+              <div class="text-retroGreen">✅ เฉลยที่ถูกต้อง: <span class="font-bold">${escapeHTML(correctText)}</span></div>
+            </div>
+            <div class="text-xs text-gray-400 font-chakra bg-black/40 p-2 border border-retroBorder/50 rounded mt-1">
+              <span class="text-retroCyan font-semibold">💡 คำอธิบาย:</span> ${escapeHTML(q.explanation)}
+            </div>
+          `;
+          reviewList.appendChild(item);
+        }
+      });
+      
+      if (incorrectCount === 0) {
+        reviewList.innerHTML = `
+          <div class="text-center py-4 font-chakra text-retroGreen font-bold text-sm">
+            🎉 ยอดเยี่ยมมาก! คุณตอบถูกหมดทุกข้อ ไม่มีข้อผิดพลาดที่ต้องทบทวน!
+          </div>
+        `;
+      }
 
       const finalAvatarContainer = document.getElementById('final-avatar-svg-container').parentElement;
       const finalLevelBadge = document.getElementById('final-level-badge');
