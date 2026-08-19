@@ -44,3 +44,4 @@
 2. **แก้ไขคำถามหรือคำอธิบาย:** แก้ไขได้โดยตรงที่ไฟล์ [law_quiz_markdown.md](file:///home/yummyaom/law/law_quiz_markdown.md) หรือแก้ไขในแท็ก `<script id="quiz-markdown">` ใน [index.html](file:///home/yummyaom/law/index.html)
 3. **Push โค้ดกลับขึ้นมาแชร์กันได้เลย!**
 # midterm-law-quest
+# midterm-law-quest
