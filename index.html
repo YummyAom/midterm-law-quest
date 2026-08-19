@@ -1,0 +1,2781 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Law Quiz - ยิ่งตอบถูกยิ่งเสี่ยงคุก!</title>
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="มินิเกมตอบคำถามข้อสอบกฎหมายดิจิทัลสุดมันส์สไตล์ Retro Arcade ยิ่งตอบถูกตัวละครยิ่งเข้ม และยิ่งโดนตำรวจเพ่งเล็ง!">
+  
+  <!-- CDNs for Tailwind CSS and Retro Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            pressStart: ['"Press Start 2P"', 'monospace'],
+            chakra: ['"Chakra Petch"', 'sans-serif'],
+          },
+          colors: {
+            retroBg: '#0b0813',
+            retroCard: '#141026',
+            retroBorder: '#32285b',
+            retroBorderActive: '#6d4df2',
+            retroPink: '#ff007f',
+            retroCyan: '#00ffff',
+            retroGreen: '#39ff14',
+            retroRed: '#ff3131',
+            retroYellow: '#ffea00',
+          },
+          boxShadow: {
+            retro: '4px 4px 0px 0px #32285b',
+            retroPink: '4px 4px 0px 0px #ff007f',
+            retroCyan: '4px 4px 0px 0px #00ffff',
+            retroGreen: '4px 4px 0px 0px #39ff14',
+            retroRed: '4px 4px 0px 0px #ff3131',
+            retroActive: '6px 6px 0px 0px #6d4df2',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Global Styles */
+    body {
+      font-family: 'Chakra Petch', sans-serif;
+      background-color: #0b0813;
+      background-image: 
+        linear-gradient(rgba(26, 21, 50, 0.4) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(26, 21, 50, 0.4) 1px, transparent 1px);
+      background-size: 24px 24px;
+      overflow-x: hidden;
+    }
+    
+    /* CRT Scanlines Overlay */
+    .crt-overlay {
+      position: fixed;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: linear-gradient(rgba(18, 16, 32, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+      z-index: 999;
+      background-size: 100% 4px;
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b0813;
+      border-left: 2px solid #32285b;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #32285b;
+      border: 2px solid #0b0813;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #ff007f;
+    }
+
+    /* Keyframes */
+    @keyframes siren-red {
+      0%, 100% { background-color: rgba(255, 49, 49, 0.2); }
+      50% { background-color: rgba(255, 49, 49, 0.0); }
+    }
+    @keyframes siren-blue {
+      0%, 100% { background-color: rgba(0, 255, 255, 0.0); }
+      50% { background-color: rgba(0, 255, 255, 0.2); }
+    }
+    .animate-siren-red { animation: siren-red 0.8s infinite; }
+    .animate-siren-blue { animation: siren-blue 0.8s infinite 0.4s; }
+
+    @keyframes shake {
+      0%, 100% { transform: translate(0, 0); }
+      10%, 30%, 50%, 70%, 90% { transform: translate(-2px, -1px); }
+      20%, 40%, 60%, 80% { transform: translate(2px, 1px); }
+    }
+    .animate-shake { animation: shake 0.5s infinite; }
+
+    @keyframes neon-glow {
+      0%, 100% { text-shadow: 0 0 5px #ff007f, 0 0 10px #ff007f; }
+      50% { text-shadow: 0 0 10px #ff007f, 0 0 20px #ff007f, 0 0 30px #ff007f; }
+    }
+    .neon-text-pink { animation: neon-glow 1.5s infinite; }
+
+    @keyframes sweat {
+      0% { transform: translateY(0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(20px); opacity: 0; }
+    }
+    .animate-sweat-1 { animation: sweat 2s infinite; }
+    .animate-sweat-2 { animation: sweat 2.5s infinite 1s; }
+
+    /* Button Tap Effect */
+    .arcade-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px 0px currentColor;
+    }
+  </style>
+</head>
+<body class="text-white relative min-h-screen pb-12 flex flex-col justify-between">
+  <!-- CRT Screen Effect overlay -->
+  <div class="crt-overlay"></div>
+
+  <!-- Sirens for Wanted Level 4 -->
+  <div id="siren-overlay-red" class="fixed inset-0 pointer-events-none z-50 mix-blend-color-burn opacity-0 transition-opacity duration-300"></div>
+  <div id="siren-overlay-blue" class="fixed inset-0 pointer-events-none z-50 mix-blend-color-burn opacity-0 transition-opacity duration-300"></div>
+
+  <!-- Full Screen Wanted / Police Peering Overlay (Level 3 & 4) -->
+  <div id="police-peering-overlay" class="fixed inset-0 pointer-events-none z-30 opacity-0 transition-all duration-500 overflow-hidden">
+    <!-- Searchlights scanning the viewport -->
+    <svg class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="0,0 200,900 400,900" fill="rgba(255, 234, 0, 0.08)">
+        <animate attributeName="points" 
+          values="0,0 200,900 400,900; 0,0 600,900 800,900; 0,0 200,900 400,900" 
+          dur="6s" repeatCount="indefinite"/>
+      </polygon>
+      <polygon points="100%,0 80%,100% 60%,100%" fill="rgba(255, 234, 0, 0.06)">
+        <animate attributeName="points" 
+          values="100%,0 80%,100% 60%,100%; 100%,0 40%,100% 20%,100%; 100%,0 80%,100% 60%,100%" 
+          dur="8s" repeatCount="indefinite"/>
+      </polygon>
+    </svg>
+
+    <!-- Top Left Peering Police Officer Silhouette -->
+    <div class="absolute -top-4 -left-4 w-40 md:w-56 opacity-85 z-40 transition-transform duration-700 ease-out transform -translate-y-8 -translate-x-8" id="peering-police-1">
+      <svg viewBox="0 0 160 160" class="w-full h-full fill-[#0a0712]/95 stroke-retroBorder stroke-2 shadow-2xl">
+        <!-- Cop cap shape -->
+        <path d="M 15 65 Q 80 15 145 65 L 138 82 Q 80 48 22 82 Z"/>
+        <!-- Visor sunglasses frame -->
+        <polygon points="30,90 73,90 69,103 35,103" fill="#000" stroke="#ff007f" stroke-width="2"/>
+        <polygon points="87,90 130,90 125,103 91,103" fill="#000" stroke="#ff007f" stroke-width="2"/>
+        <!-- Glowing red reflection lens -->
+        <rect x="39" y="93" width="20" height="2" fill="#ff0055"/>
+        <rect x="96" y="93" width="20" height="2" fill="#ff0055"/>
+        <line x1="73" y1="94" x2="87" y2="94" stroke="#ff007f" stroke-width="2"/>
+        <!-- Flashlight beam from officer -->
+        <polygon points="80,110 -150,550 250,550" fill="rgba(255, 234, 0, 0.1)"/>
+      </svg>
+    </div>
+
+    <!-- Bottom Right Peering Police Officer Silhouette -->
+    <div class="absolute -bottom-6 -right-6 w-40 md:w-56 opacity-85 z-40 transition-transform duration-700 ease-out transform translate-y-8 translate-x-8" id="peering-police-2">
+      <svg viewBox="0 0 160 160" class="w-full h-full fill-[#0a0712]/95 stroke-retroBorder stroke-2 shadow-2xl">
+        <!-- Officer holding searchlight binoculars -->
+        <circle cx="80" cy="90" r="23" />
+        <!-- Binoculars circles -->
+        <circle cx="65" cy="85" r="15" fill="#000" stroke="#00ffff" stroke-width="2"/>
+        <circle cx="95" cy="85" r="15" fill="#000" stroke="#00ffff" stroke-width="2"/>
+        <!-- Glowing Cyan visor lens reflection -->
+        <circle cx="65" cy="85" r="6" fill="#00ffff" opacity="0.5"/>
+        <circle cx="95" cy="85" r="6" fill="#00ffff" opacity="0.5"/>
+        <!-- Cop Cap -->
+        <path d="M 32 52 Q 80 15 128 52 Q 80 43 32 52 Z" />
+        <rect x="52" y="47" width="56" height="5" fill="#ffea00" />
+        <!-- Flashlight beam -->
+        <polygon points="80,85 80,-350 -450,-350" fill="rgba(0, 255, 255, 0.07)"/>
+      </svg>
+    </div>
+
+    <!-- Vignette Flashing Frame -->
+    <div id="vignette-frame" class="absolute inset-0 border-[0px] border-transparent transition-all duration-500"></div>
+  </div>
+
+  <!-- Centered Retro Warning Popup Modal (Level 3 & 4 Transition) -->
+  <div id="police-alert-modal" class="hidden fixed inset-0 bg-black/85 flex items-center justify-center p-4 z-50">
+    <div class="bg-retroCard border-4 border-retroYellow p-6 max-w-md w-full text-center shadow-retro active:translate-y-0 transition-all duration-300 transform scale-95" id="modal-content-box">
+      <!-- Flashing lights for the modal background -->
+      <div id="modal-siren-bg" class="absolute inset-0 opacity-10 pointer-events-none"></div>
+
+      <h3 id="modal-alert-title" class="font-pressStart text-xs md:text-sm text-retroYellow mb-4 animate-pulse">⚠️ SECURITY WARNING ⚠️</h3>
+      
+      <!-- Staring Cop Cartoon SVG -->
+      <div class="w-32 h-32 mx-auto bg-black/50 border-4 border-retroBorder mb-4 flex items-center justify-center p-2 rounded-lg overflow-hidden">
+        <svg viewBox="0 0 100 100" class="w-full h-full fill-[#ffea00] stroke-retroCard stroke-[1.5]">
+          <!-- Cop Cap -->
+          <path d="M 10 32 Q 50 8 90 32 L 82 44 Q 50 28 18 44 Z" fill="#ffea00" />
+          <rect x="35" y="40" width="30" height="4" fill="#ff007f" />
+          <circle cx="50" cy="24" r="8" fill="none" stroke="#ffea00" stroke-width="2"/>
+          <polygon points="50,18 52,23 58,23 53,26 55,31 50,28 45,31 47,26 42,23 48,23" fill="#ffea00"/>
+          
+          <!-- Staring Binoculars (Peering face) -->
+          <circle cx="36" cy="62" r="14" fill="#0b0813" stroke="#ffea00" stroke-width="3"/>
+          <circle cx="64" cy="62" r="14" fill="#0b0813" stroke="#ffea00" stroke-width="3"/>
+          <line x1="50" y1="62" x2="50" y2="62" stroke="#ffea00" stroke-width="3" stroke-linecap="round"/>
+          
+          <!-- Big animated eyeballs -->
+          <circle cx="36" cy="62" r="7" fill="#fff"/>
+          <circle cx="64" cy="62" r="7" fill="#fff"/>
+          <circle cx="36" cy="62" r="3.5" fill="#000">
+            <animate attributeName="cx" values="33;39;33" dur="1.5s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="64" cy="62" r="3.5" fill="#000">
+            <animate attributeName="cx" values="61;67;61" dur="1.5s" repeatCount="indefinite"/>
+          </circle>
+          
+          <!-- Sweat drop -->
+          <path d="M 82 55 Q 80 62 82 68" fill="none" stroke="#00ffff" stroke-width="2" stroke-linecap="round"/>
+          <!-- Mouth -->
+          <path d="M 40 85 Q 50 90 60 85" fill="none" stroke="#ffea00" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <p id="modal-alert-text" class="font-chakra text-white text-sm md:text-base font-semibold mb-6 leading-relaxed">
+        ระวัง! ตำรวจพบความเคลื่อนไหวทางกฎหมายของคุณและกำลังจับตามองคุณอยู่!
+      </p>
+
+      <button onclick="closeAlertModal()" class="px-6 py-3 bg-retroYellow text-black font-pressStart text-[10px] border-2 border-white shadow-retro hover:bg-white hover:shadow-retroPink active:translate-y-1 transition duration-200 cursor-pointer w-full max-w-[220px] mx-auto block uppercase arcade-btn">
+        RESUME GAME
+      </button>
+    </div>
+  </div>
+
+  <!-- Header Section -->
+  <header class="border-b-4 border-retroBorder bg-retroCard p-4 sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <!-- Pixel Logo Icon -->
+        <div class="bg-retroPink text-white p-2 font-pressStart text-xs border-2 border-white shadow-retro">
+          LAW
+        </div>
+        <div>
+          <h1 class="font-pressStart text-sm md:text-lg tracking-wider text-retroCyan uppercase">Law Runner</h1>
+          <p class="font-chakra text-xs text-gray-400">ยิ่งตอบถูก ยิ่งเสี่ยงคุก! (Hackathon Version)</p>
+        </div>
+      </div>
+      
+      <!-- Top Scoreboard & Controls -->
+      <div class="flex flex-wrap items-center gap-2.5 sm:gap-4">
+        <!-- Hackathon Toggle Button -->
+        <button id="hack-mode-btn" class="bg-retroPink border-2 border-white text-white px-3 py-1.5 rounded shadow-retroPink hover:bg-white hover:text-retroPink transition duration-200 flex items-center space-x-1 text-xs font-pressStart arcade-btn" onclick="toggleHackMode()">
+          <span id="hack-mode-icon">🚨</span>
+          <span class="font-chakra hidden sm:inline">โหมดเกรียน (ON)</span>
+        </button>
+
+        <div class="bg-black/40 border border-retroBorder px-3 py-1.5 rounded flex items-center space-x-2 text-sm font-pressStart">
+          <span class="text-retroPink">COIN:</span>
+          <span class="text-retroGreen animate-pulse">999</span>
+        </div>
+        
+        <button id="mute-btn" class="bg-retroCard border-2 border-retroBorder text-retroCyan p-2 rounded shadow-retro hover:border-retroCyan hover:text-white transition duration-200 flex items-center space-x-1 text-sm arcade-btn" onclick="toggleMute()">
+          <span id="mute-icon">🔊</span>
+          <span class="font-chakra hidden sm:inline">เสียง</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Top Flashing Alert Banner (Level 3 & 4) -->
+  <div id="police-alert-banner" class="hidden bg-retroYellow text-black border-b-4 border-white text-center py-2.5 px-4 font-pressStart text-[9px] md:text-xs z-40 sticky top-[76px] tracking-wider shadow-lg flex items-center justify-center space-x-2">
+    <span class="animate-pulse">👮 WARNING: THE POLICE ARE WATCHING YOU! / ตำรวจกำลังเฝ้ามองคุณอยู่! 👮</span>
+  </div>
+
+  <!-- Main Workspace -->
+  <main class="flex-grow max-w-6xl w-full mx-auto p-4 flex flex-col items-center justify-center">
+    
+    <!-- LOADING SCREEN -->
+    <div id="loading-screen" class="w-full max-w-md bg-retroCard border-4 border-retroBorder p-6 shadow-retro text-center my-12">
+      <h2 class="font-pressStart text-retroPink text-lg mb-6 animate-pulse">LOADING SYSTEM...</h2>
+      <div class="w-full bg-black/40 border-2 border-retroBorder h-8 p-1">
+        <div id="load-progress" class="bg-retroCyan h-full w-0 transition-all duration-300"></div>
+      </div>
+      <p class="font-chakra text-sm mt-4 text-gray-400">กำลังถอดรหัสข้อสอบกฎหมายจากเอกสาร Markdown...</p>
+    </div>
+
+    <!-- WELCOME SCREEN -->
+    <div id="welcome-screen" class="hidden w-full max-w-2xl bg-retroCard border-4 border-retroBorder p-8 shadow-retro text-center my-8">
+      <h2 class="font-pressStart text-xl md:text-2xl text-retroPink mb-4 neon-text-pink">LAW RUNNER: DIGITAL ETHICS</h2>
+      <p class="text-gray-300 font-chakra mb-6 max-w-lg mx-auto text-base">
+        ยินดีต้อนรับสู่มินิเกมตอบคำถามกฎหมายดิจิทัลสุดระทึก (49 ข้อ)! <br>
+        กติกาคือ: ยิ่งตอบถูก ระดับความสามารถด้านกฎหมายและสีผิวของคุณจะดาร์กขึ้นเรื่อย ๆ 
+        จนเมื่อถึง <span class="text-retroRed font-bold">Level 4 (Wanted 5 ดาว)</span> ตำรวจจะนำไซเรนบุกจับคุณ!
+      </p>
+      
+      <!-- Rules & Levels Display -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8 text-left text-xs font-chakra">
+        <div class="bg-black/30 border border-retroBorder p-2.5 rounded">
+          <div class="text-retroCyan font-bold">LV.1 ขาวใส</div>
+          <div class="text-gray-400">0% - 25% ถูก</div>
+          <div class="text-green-400 mt-1">👮 ตำรวจเพิกเฉย</div>
+        </div>
+        <div class="bg-black/30 border border-retroBorder p-2.5 rounded">
+          <div class="text-retroYellow font-bold">LV.2 ผิวแทน</div>
+          <div class="text-gray-400">26% - 50% ถูก</div>
+          <div class="text-yellow-400 mt-1">👮 เริ่มหันมอง</div>
+        </div>
+        <div class="bg-black/30 border border-retroBorder p-2.5 rounded">
+          <div class="text-retroPink font-bold">LV.3 เข้มข้อสอบ</div>
+          <div class="text-gray-400">51% - 75% ถูก</div>
+          <div class="text-orange-400 mt-1">👮 จับจ้องเขม็ง</div>
+        </div>
+        <div class="bg-black/30 border border-retroBorder p-2.5 rounded">
+          <div class="text-retroRed font-bold">LV.4 ความมืด</div>
+          <div class="text-gray-400">76%+ ถูก</div>
+          <div class="text-retroRed font-bold animate-pulse mt-1">🚨 ไซเรนไล่ล่า!</div>
+        </div>
+      </div>
+
+      <!-- Mode Selection in Welcome Screen -->
+      <div class="bg-black/30 border-2 border-retroBorder p-4 rounded mb-6 max-w-sm mx-auto text-center">
+        <label class="font-chakra text-xs text-gray-400 block mb-2.5 uppercase tracking-wider">เลือกโหมดการเล่น (Select Mode)</label>
+        <div class="flex justify-center space-x-2">
+          <button id="welcome-hack-on" onclick="setHackMode(true)" class="px-3.5 py-2 border-2 border-retroPink bg-retroPink text-white text-xs font-pressStart shadow-retroPink rounded cursor-pointer arcade-btn">
+            🚨 โหมดเกรียน
+          </button>
+          <button id="welcome-hack-off" onclick="setHackMode(false)" class="px-3.5 py-2 border-2 border-retroBorder bg-black/40 text-gray-400 text-xs font-pressStart rounded cursor-pointer arcade-btn">
+            📝 โหมดปกติ
+          </button>
+        </div>
+      </div>
+
+      <button onclick="startGame()" class="px-8 py-4 bg-retroGreen text-black font-pressStart text-base border-4 border-white shadow-retroGreen hover:bg-white hover:shadow-retro active:translate-y-1 transition duration-200 cursor-pointer w-full max-w-sm mx-auto block uppercase arcade-btn">
+        INSERT COIN & START
+      </button>
+    </div>
+
+    <!-- GAMEPLAY AREA -->
+    <div id="game-screen" class="hidden w-full grid grid-cols-1 lg:grid-cols-12 gap-6 my-4">
+      
+      <!-- LEFT COLUMN: Quiz & Questions (8/12) -->
+      <div class="lg:col-span-8 flex flex-col space-y-4">
+        
+        <!-- Question Card -->
+        <div class="bg-retroCard border-4 border-retroBorder p-5 md:p-6 shadow-retro relative">
+          <!-- Question Header Status -->
+          <div class="flex items-center justify-between border-b-2 border-retroBorder pb-3 mb-4 text-xs font-pressStart text-gray-400">
+            <div>QUESTION: <span id="q-number" class="text-retroCyan">1/49</span></div>
+            <div class="flex items-center space-x-2">
+              <span class="text-retroYellow">COMBO:</span>
+              <span id="combo-streak" class="text-retroPink animate-bounce">x0</span>
+            </div>
+          </div>
+
+          <!-- Question Content -->
+          <div id="q-content" class="text-lg md:text-xl font-chakra font-semibold text-white leading-relaxed mb-6">
+            กำลังโหลดข้อมูลคำถาม...
+          </div>
+
+          <!-- Options Grid -->
+          <div id="options-container" class="grid grid-cols-1 gap-3.5 mb-6">
+            <!-- Option buttons will be dynamically generated here -->
+          </div>
+
+          <!-- Explanation Box (Hidden initially) -->
+          <div id="explanation-container" class="hidden bg-black/50 border-l-4 border-retroCyan p-4 text-sm font-chakra text-gray-300 leading-relaxed mb-6">
+            <h4 class="font-bold text-retroCyan mb-1 flex items-center">
+              <span class="mr-2">📝 คำอธิบายเฉลย:</span>
+              <span id="explanation-title" class="text-xs px-2 py-0.5 bg-retroCyan/20 text-retroCyan rounded"></span>
+            </h4>
+            <p id="explanation-text"></p>
+          </div>
+
+          <!-- Actions Footer -->
+          <div class="flex justify-end border-t border-retroBorder pt-4">
+            <button id="next-btn" onclick="nextQuestion()" class="hidden px-6 py-3 bg-retroCyan text-black font-pressStart text-xs border-2 border-white shadow-retroCyan hover:bg-white hover:text-black arcade-btn">
+              NEXT QUESTION &gt;
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: Avatar Progression & Stats (4/12) -->
+      <div class="lg:col-span-4 flex flex-col space-y-4">
+        
+        <!-- Avatar Display Card -->
+        <div id="avatar-card" class="bg-retroCard border-4 border-retroBorder p-5 shadow-retro flex flex-col items-center relative overflow-hidden transition-all duration-300">
+          <div class="absolute inset-0 bg-retroBg opacity-10 pointer-events-none"></div>
+          
+          <!-- Avatar Sirens Light Overlay (Dynamic class trigger) -->
+          <div id="avatar-siren-red" class="absolute inset-0 animate-siren-red pointer-events-none opacity-0 transition-opacity duration-300"></div>
+          <div id="avatar-siren-blue" class="absolute inset-0 animate-siren-blue pointer-events-none opacity-0 transition-opacity duration-300"></div>
+
+          <!-- Level Header Badge -->
+          <div class="bg-black/50 border-2 border-retroBorder px-3 py-1 font-pressStart text-[10px] text-retroCyan rounded-full mb-4 z-10">
+            SUSPECT RATING
+          </div>
+
+          <!-- Dynamic SVG Avatar Container -->
+          <div id="avatar-svg-container" class="w-40 h-40 bg-black/40 border-4 border-retroBorder shadow-inner relative flex items-center justify-center overflow-hidden z-10">
+            <!-- Dynamic SVG loaded via Javascript -->
+          </div>
+
+          <!-- Level Details -->
+          <div class="text-center mt-4 w-full z-10">
+            <div id="avatar-level-name" class="font-pressStart text-xs text-retroPink">LEVEL 1: ขาวบริสุทธิ์</div>
+            <div id="avatar-level-title" class="font-chakra text-sm font-semibold text-white mt-1">"ขาวใส ปลอดภัยไร้มลทิน"</div>
+            <div id="avatar-police-status" class="bg-black/50 border border-retroBorder p-2 rounded text-[11px] font-chakra text-gray-400 mt-2.5 leading-snug">
+              ตำรวจเดินผ่านชิว ๆ ไม่ชายตามองด้วยซ้ำ
+            </div>
+          </div>
+
+          <!-- Wanted Stars Graphic (GTA Style) -->
+          <div class="flex space-x-1.5 mt-4 z-10" id="wanted-stars">
+            <!-- 5 stars generated via JS -->
+          </div>
+
+          <!-- Score Progress Bar -->
+          <div class="w-full mt-4 z-10 border-t border-retroBorder/60 pt-4">
+            <div class="flex justify-between font-chakra text-xs text-gray-400 mb-1">
+              <span>เกจความน่าสงสัยตำรวจ (Aggro)</span>
+              <span id="aggro-percent" class="text-retroCyan font-bold">0%</span>
+            </div>
+            <div class="w-full bg-black/40 border border-retroBorder h-4 p-0.5 rounded">
+              <div id="aggro-bar" class="bg-retroCyan h-full w-0 transition-all duration-300"></div>
+            </div>
+            
+            <div class="flex justify-between font-chakra text-xs text-gray-400 mt-3 pt-2 border-t border-retroBorder/30">
+              <span>คะแนนปัจจุบัน:</span>
+              <span class="text-retroGreen font-bold font-pressStart text-[10px]"><span id="score-text">0</span>/<span id="total-questions-text">49</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- GAME OVER / SUMMARY SCREEN -->
+    <div id="game-over-screen" class="hidden w-full max-w-2xl bg-retroCard border-4 border-retroBorder p-8 shadow-retro text-center my-8">
+      <h2 class="font-pressStart text-2xl text-retroPink mb-2 neon-text-pink">GAME OVER</h2>
+      <p class="font-chakra text-sm text-gray-400 mb-6 uppercase">การสอบใบขับขี่กฎหมายดิจิทัลสิ้นสุดลงแล้ว</p>
+
+      <!-- Final Avatar Showcase -->
+      <div class="flex flex-col items-center justify-center mb-6">
+        <div id="final-avatar-svg-container" class="w-48 h-48 bg-black/40 border-4 border-retroBorder shadow-retro mb-4 flex items-center justify-center overflow-hidden">
+          <!-- Final SVG -->
+        </div>
+        <div id="final-level-badge" class="px-4 py-1.5 bg-retroPink text-white border-2 border-white font-pressStart text-xs shadow-retro">
+          LEVEL 4
+        </div>
+        <h3 id="final-status-title" class="font-chakra text-xl font-bold mt-3">ฉายา: วายร้าย 5 ดาว</h3>
+        <p id="final-status-desc" class="font-chakra text-sm text-gray-400 mt-1 max-w-md">
+          คำอธิบายสถานภาพทางกฎหมายของคุณ
+        </p>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-3 gap-4 mb-8">
+        <div class="bg-black/40 b  <script type="text/markdown" id="quiz-markdown">
+# สรุปข้อสอบกฎหมายดิจิทัลจากไฟล์ `law.zip`
+
+> รวมคำถามจากภาพทั้งหมด **49 ข้อ** พร้อมตัวเลือกและเฉลย  
+> **หมายเหตุ:** เฉลยอ้างอิงจากตัวเลือกที่ระบบแสดงเป็นสีเขียวในภาพ
+
+---
+
+## หมวด พ.ร.บ.ธุรกรรมทางอิเล็กทรอนิกส์ / NDA
+
+### ข้อ 1
+**(NDA) บริษัท X และบริษัท Y กำลังเจรจาเพื่อร่วมลงทุนจัดตั้งกิจการร่วมค้า (Joint Venture) โดยทั้งสองฝ่ายจำเป็นต้องแลกเปลี่ยนข้อมูลทางการเงินและแผนธุรกิจซึ่งกันและกัน ในระหว่างการเจรจา**
+
+ตัวเลือก:
+- A. Unilateral NDA
+- B. ไม่จำเป็นต้องทำ NDA เพราะเป็นการเจรจาเพื่อเป็นพันธมิตรทางธุรกิจ
+- C. ทำ NDA แยกกันฝ่ายละฉบับโดยไม่ผูกพันซึ่งกันและกัน
+- D. Mutual NDA
+
+**เฉลย: D**
+คำอธิบาย: ในการเจรจาร่วมทุน (Joint Venture) ที่ทั้งสองฝ่ายจำต้องแลกเปลี่ยนข้อมูลที่เป็นความลับของกันและกัน สัญญาประเภท Mutual NDA (สองฝ่าย) จะช่วยปกป้องข้อมูลความลับของทั้งสองฝ่ายอย่างเท่าเทียมและมีผลผูกพันทั้งคู่สัญญาร่วมกัน
+
+---
+
+### ข้อ 2
+**(พรบ. ธุรกรรม) ข้อใดไม่ถือเป็น “ธุรกรรมทางอิเล็กทรอนิกส์”**
+
+ตัวเลือก:
+- A. การโพสต์ข่าวสารบน Facebook
+- B. การโอนเงินด้วยระบบอัตโนมัติผ่านเครือข่าย
+- C. การตกลงทำสัญญาซื้อ-ขายบนเครือข่าย
+- D. การซื้อ-ขายสินค้าผ่านเครือข่ายอินเทอร์เน็ต
+
+**เฉลย: A**
+คำอธิบาย: การโพสต์ข่าวสารหรือแสดงความคิดเห็นบน Facebook เป็นเพียงการกระจายข้อมูลสาธารณะทั่วไป ไม่นับเป็น "ธุรกรรม" เนื่องจากไม่ได้มีผลสร้างนิติกรรมหรือข้อผูกพันทางการเงินหรือการค้าทางอิเล็กทรอนิกส์ระหว่างบุคคล
+
+---
+
+### ข้อ 3
+**(พรบ. ธุรกรรม) บริษัท A และบริษัท B ตกลงกันเอาไว้ในสัญญาว่าจะใช้ลายเซ็นที่วาดบนหน้าจอสัมผัส (Touchscreen Signature) แทนการใช้ลายเซ็นดิจิทัลแบบ PKI สำหรับการอนุมัติเอกสารภายในระหว่างสองบริษัท การตกลงเช่นนี้สอดคล้องกับหลักการของพระราชบัญญัติว่าด้วยธุรกรรมทางอิเล็กทรอนิกส์มากที่สุด**
+
+ตัวเลือก:
+- A. หลัก Non-Discrimination เพียงอย่างเดียว
+- B. ไม่สอดคล้องกับหลักการใดเลย เพราะกฎหมายบังคับให้ใช้ PKI เท่านั้น
+- C. หลัก Party Autonomy ที่เปิดให้คู่สัญญาสามารถตกลงกันเองได้ว่าจะใช้วิธีการใดในการทำธุรกรรมอิเล็กทรอนิกส์
+- D. หลัก Functional Equivalence เพียงอย่างเดียว
+
+**เฉลย: C**
+คำอธิบาย: หลัก Party Autonomy (เสรีภาพในการตกลงของคู่สัญญา) ตาม พ.ร.บ.ธุรกรรมฯ ยอมรับให้คู่สัญญาสามารถตกลงกันเองได้ว่าจะใช้ลายมือชื่ออิเล็กทรอนิกส์รูปแบบใด (เช่น การเซ็นสัมผัสบนหน้าจอ) โดยไม่จำกัดแค่แบบ PKI
+
+---
+
+### ข้อ 4
+**(พรบ. ธุรกรรม) ลูกค้าธนาคารถูกมิจฉาชีพหลอกลวง (Phishing) ให้กรอกรหัส OTP บนเว็บไซต์ปลอมที่เลียนแบบธนาคาร ทำให้ถูกโอนเงินออกจากบัญชี 500,000 บาท ธนาคารชี้แจงว่า OTP ถือเป็นลายมือชื่ออิเล็กทรอนิกส์ตามกฎหมายไทยในทุกกรณี ธุรกรรมจึงถูกต้องตามกฎหมาย ข้อโต้แย้งใดต่อไปนี้สอดคล้องกับหลักกฎหมายในการวิเคราะห์กรณีนี้มากที่สุด**
+
+ตัวเลือก:
+- A. OTP ไม่ถือเป็นลายมือชื่ออิเล็กทรอนิกส์ตามกฎหมายไทยในทุกกรณี
+- B. OTP ที่ถูกขโมยผ่าน Phishing ยังคงมีผลผูกพันเสมอ เพราะเป็นไปตามนิยามในมาตรา 9 แล้วไม่ต้องพิจารณาเงื่อนไขอื่นอีก
+- C. ต้องพิจารณาความน่าเชื่อถือของลายมือชื่ออิเล็กทรอนิกส์ตามมาตรา 26 ด้วยว่าข้อมูลที่ใช้บ่งชี้ว่าอยู่ภายใต้การควบคุมของเจ้าของลายมือชื่อจริงหรือไม่
+- D. ธนาคารไม่ต้องรับผิดชอบใด ๆ ทั้งสิ้น เพราะเป็นความประมาทของลูกค้าแต่เพียงฝ่ายเดียว
+
+**เฉลย: C**
+คำอธิบาย: ตามมาตรา 26 ของ พ.ร.บ.ธุรกรรมฯ ลายมือชื่ออิเล็กทรอนิกส์ที่ปลอดภัยต้องอยู่ภายใต้การควบคุมที่แท้จริงของเจ้าของ ในกรณี Phishing รหัส OTP ถูกแฮกเกอร์ขโมยไปกรอกทำธุรกรรม จึงถือว่าไม่อยู่ในการควบคุมของเจ้าของบัญชี ธุรกรรมจึงไม่มีผลผูกพันลูกค้า
+
+---
+
+### ข้อ 5
+**(พรบ. ธุรกรรม) ข้อใดไม่ใช่หลักการพื้นฐานของ พ.ร.บ.ธุรกรรมฯ**
+
+ตัวเลือก:
+- A. คู่สัญญาตกลงใช้ร่วมกัน
+- B. ถ้ามีระบบอิเล็กทรอนิกส์ต้องยกเลิกระบบกระดาษ
+- C. รองรับทุกเทคโนโลยี
+- D. ความเท่าเทียมกันระหว่าง “กระดาษ” และ “ข้อมูลอิเล็กทรอนิกส์”
+
+**เฉลย: B**
+คำอธิบาย: พ.ร.บ.ธุรกรรมฯ มุ่งเน้นการรองรับผลทางกฎหมายให้สอดคล้องกัน (Functional Equivalence) ไม่ได้มีข้อบังคับหรือนโยบายให้ต้องยกเลิกการใช้กระดาษแต่อย่างใดเมื่อมีระบบคอมพิวเตอร์เข้ามาทดแทน
+
+---
+
+### ข้อ 6
+**(NDA) บริษัท A ว่าจ้างที่ปรึกษาอิสระ (Freelance Consultant) เข้ามาช่วยพัฒนาระบบสารสนเทศ ซึ่งที่ปรึกษาจะได้เข้าถึงข้อมูลลับทางธุรกิจของบริษัท A แต่บริษัทจะไม่มีโอกาสเข้าถึงข้อมูลลับใด ๆ ของที่ปรึกษาเลย สัญญา NDA ประเภทใดเหมาะสมที่สุด**
+
+ตัวเลือก:
+- A. Unilateral NDA (สัญญาฝ่ายเดียว)
+- B. Mutual NDA (สัญญาสองฝ่าย)
+- C. Non-Compete Agreement
+- D. Multilateral NDA (สัญญาหลายฝ่าย)
+
+**เฉลย: A**
+คำอธิบาย: เนื่องจากมีเพียงบริษัท A เท่านั้นที่เป็นฝ่ายเปิดเผยข้อมูลสำคัญให้กับ Freelance ส่วน Freelance ไม่มีการเปิดเผยข้อมูลลับใด ๆ ให้บริษัท จึงควรใช้สัญญาฝ่ายเดียว (Unilateral NDA) เพื่อคุ้มครองข้อมูลของบริษัท A ฝ่ายเดียว
+
+---
+
+### ข้อ 7
+**(NDA) อดีตพนักงานลงนามเฉพาะสัญญา NDA กับบริษัทเดิม โดยไม่มีการทำ Non-Compete Agreement (สัญญาห้ามไปทำงานกับคู่แข่ง) แต่อย่างใด จากนั้นได้ไปทำงานกับบริษัทคู่แข่งทันที โดยไม่ปรากฏว่ามีการเปิดเผยหรือนำข้อมูลลับของบริษัทเดิมไปใช้ กรณีนี้ถือว่าอดีตพนักงานฝ่าฝืนข้อตกลงที่เคยลงนามไว้หรือไม่**
+
+ตัวเลือก:
+- A. ขึ้นอยู่กับตำแหน่งงานใหม่เพียงอย่างเดียว โดยไม่ต้องพิจารณาเนื้อหาสัญญา
+- B. ไม่ฝ่าฝืน เพราะ NDA คุ้มครองเฉพาะการรักษาความลับของข้อมูล มิได้ห้ามการไปทำงานกับคู่แข่ง ซึ่งเป็นเนื้อหาของ Non-Compete Agreement
+- C. ฝ่าฝืน เพราะ NDA ครอบคลุมถึงการห้ามไปทำงานกับคู่แข่งด้วยเสมอ
+- D. ฝ่าฝืนในทุกกรณีไม่ว่าจะมีการเปิดเผยข้อมูลหรือไม่
+
+**เฉลย: B**
+คำอธิบาย: สัญญา NDA รักษาความลับไม่ให้ถูกนำไปเปิดเผย แต่ไม่มีผลในการห้ามทำงานกับคู่แข่ง ซึ่งต้องทำผ่าน Non-Compete Agreement แยกต่างหาก ดังนั้นหากไม่มีข้อมูลลับของบริษัทเดิมรั่วไหล อดีตพนักงานจึงไม่มีความผิด
+
+---
+
+### ข้อ 8
+**(พรบ. ธุรกรรม) การที่ศาลจะเชื่อถือพยานหลักฐานทางอิเล็กทรอนิกส์หรือไม่นั้นขึ้นอยู่กับ ...**
+
+ตัวเลือก:
+- A. การชั่งน้ำหนักพยานหลักฐานของศาลเอง
+- B. ความน่าเชื่อถือของพยานหลักฐาน
+- C. ถูกทั้งข้อ ก. และข้อ ข.
+- D. ต้องเชื่อเสมอ เพราะถือเป็นหลักฐานทางอิเล็กทรอนิกส์
+
+**เฉลย: C**
+คำอธิบาย: ศาลจะรับฟังหลักฐานอิเล็กทรอนิกส์หรือไม่นั้น ขึ้นอยู่กับความน่าเชื่อถือของระบบในการบันทึกและรักษาความสมบูรณ์ของข้อมูล (มาตรา 11) และการใช้ดุลยพินิจชั่งน้ำหนักพยานหลักฐานทางคดีของศาลร่วมกัน
+
+---
+
+### ข้อ 9
+**(พรบ. ธุรกรรม) Technology Neutrality คือคำอธิบายความเท่าเทียมของเทคโนโลยีในการทำให้ระบบอิเล็กทรอนิกส์มีผลว่า ใช้ในการพิจารณาคดีได้หรือไม่ ใช้ในการวินิจฉัยมาตราใด**
+
+ตัวเลือก:
+- A. มาตรา 9
+- B. มาตรา 5
+- C. มาตรา 7
+- D. มาตรา 8
+
+**เฉลย: C**
+คำอธิบาย: มาตรา 7 ระบุว่าข้อความใด ๆ ห้ามปฏิเสธผลทางกฎหมายเพียงเพราะอยู่ในรูปของข้อมูลอิเล็กทรอนิกส์ ซึ่งสะท้อนหลักความเป็นกลางทางเทคโนโลยี (Technology Neutrality) ที่ไม่เลือกปฏิบัติกับเทคโนโลยีทุกประเภท
+
+---
+
+### ข้อ 10
+**(พรบ. ธุรกรรม) บริษัท StartTech สั่งซื้อเซิร์ฟเวอร์จากบริษัท HardNet มูลค่า 3.5 ล้านบาท โดยส่ง Purchase Order ทางอีเมล และ HardNet ตอบรับยอมรับเช่นกัน ต่อมา HardNet ไม่ส่งสินค้าตามกำหนด โดยอ้างว่าการยืนยันทางอีเมลไม่ใช่สัญญาที่ถูกต้องตามกฎหมาย เนื่องจากไม่มีการลงนามบนเอกสารกระดาษ ข้อกล่าวอ้างของ HardNet ถูกต้องหรือไม่**
+
+ตัวเลือก:
+- A. ไม่แน่นอน กฎหมายฉบับนี้ไม่ได้ครอบคลุมธุรกรรมซื้อขายระหว่างนิติบุคคล
+- B. ถูกต้อง เพราะสัญญาซื้อขายที่มีมูลค่าสูงต้องทำเป็นหนังสือกระดาษเสมอ
+- C. ไม่ถูกต้อง เพราะมาตรา 7 บัญญัติห้ามไม่ให้ปฏิเสธผลผูกพันทางกฎหมายของข้อความที่อยู่ในรูปของข้อมูลอิเล็กทรอนิกส์
+- D. ถูกต้อง เฉพาะกรณีที่มีมูลค่าสัญญาเกิน 2 ล้านบาทขึ้นไปเท่านั้น
+
+**เฉลย: C**
+คำอธิบาย: ข้ออ้างของ HardNet ฟังไม่ขึ้น เนื่องจากมาตรา 7 ของ พ.ร.บ.ธุรกรรมฯ ยืนยันว่าการส่งเอกสารตอบรับและ Purchase Order ผ่านช่องทางอิเล็กทรอนิกส์ เช่น อีเมล มีผลผูกพันทางกฎหมายเทียบเท่าหนังสือกระดาษ
+
+---
+
+### ข้อ 11
+**(พรบ. ธุรกรรม) บริษัท A และบริษัท B ตกลงกันเอาไว้ในสัญญาว่าจะใช้ลายเซ็นที่วาดบนหน้าจอสัมผัส (Touchscreen Signature) แทนการใช้ลายเซ็นดิจิทัลแบบ PKI สำหรับการอนุมัติเอกสารภายในระหว่างสองบริษัท การตกลงเช่นนี้สอดคล้องกับหลักการของพระราชบัญญัติว่าด้วยธุรกรรมทางอิเล็กทรอนิกส์มากที่สุด**
+
+ตัวเลือก:
+- A. หลัก Non-Discrimination เพียงอย่างเดียว
+- B. หลัก Party Autonomy ที่เปิดให้คู่สัญญาสามารถตกลงกันเองได้ว่าจะใช้วิธีการใดในการทำธุรกรรมอิเล็กทรอนิกส์
+- C. หลัก Functional Equivalence เพียงอย่างเดียว
+- D. ไม่สอดคล้องกับหลักการใดเลย เพราะกฎหมายบังคับให้ใช้ PKI เท่านั้น
+
+**เฉลย: B**
+คำอธิบาย: หลัก Party Autonomy (เสรีภาพของคู่สัญญา) เปิดกว้างให้ทั้งสองบริษัทตกลงตกลงตารางลายเซ็นที่วาดบนหน้าจอสัมผัสเพื่อเซ็นชื่อได้โดยชอบด้วยกฎหมาย
+
+---
+
+### ข้อ 12
+**(พรบ. ธุรกรรม) พนักงานฝ่ายจัดซื้อส่งเอกสารสัญญาสำคัญไปยัง LINE ส่วนตัวของพนักงานบริษัทคู่ค้า ซึ่งไม่ใช่ช่องทางที่บริษัทคู่ค้ากำหนดไว้อย่างเป็นทางการสำหรับการรับเอกสาร ตามมาตรา 24 กรณีนี้จะถือว่า “ได้รับ” เอกสารเมื่อใด**
+
+ตัวเลือก:
+- A. ถือว่าได้รับเมื่อผู้รับสามารถเข้าถึง (เปิดอ่าน) ข้อความนั้นได้จริง เนื่องจากไม่ใช่ระบบที่ผู้รับกำหนดไว้โดยเฉพาะ
+- B. ถือว่าไม่มีผลทางกฎหมายใด ๆ เพราะ LINE ไม่ใช่ช่องทางที่กฎหมายรับรอง
+- C. นับเวลาที่ได้รับจากวันถัดไปเสมอไม่ว่าจะเข้าถึงข้อมูลเมื่อใด
+- D. ถือว่าได้รับทันทีที่ข้อมูลถูกส่งออกจากเครื่องของผู้ส่ง
+
+**เฉลย: A**
+คำอธิบาย: มาตรา 24 ระบุว่าหากส่งเอกสารไปยังระบบที่ผู้รับไม่ได้กำหนดไว้โดยเฉพาะ จะถือว่าได้รับเมื่อข้อมูลนั้นได้เข้าถึงระบบคอมพิวเตอร์ของผู้รับและสามารถเปิดอ่านใช้งานได้จริง
+
+---
+
+### ข้อ 13
+**(พรบ. ธุรกรรม) ข้อใดคือช่องค์ประกอบของลายมือชื่ออิเล็กทรอนิกส์ที่มีผลตามกฎหมาย**
+
+ตัวเลือก:
+- A. ลายเซ็นต้องเป็นตัวเขียนเท่านั้น
+- B. สามารถระบุตัวตนของเจ้าของลายเซ็นได้
+- C. ใช้วิธีการที่เชื่อถือในการเซ็นได้
+- D. สามารถระบุเจตนาตามข้อความที่เซ็นได้
+
+**เฉลย: A**
+คำอธิบาย: โดยหลักการจริง ลายเซ็นอิเล็กทรอนิกส์ไม่จำกัดว่าต้องเขียนเป็นลายมือเสมอไป แต่ตัวเลือกเฉลยตามภาพระบบที่ป้อนในข้อนี้คือ A (เฉลยตามระบบสอบเพื่อคะแนน)
+> หมายเหตุ: ข้อนี้ในภาพระบบแสดง A เป็นสีเขียว แม้เนื้อหาตามหลักกฎหมายควรพิจารณาองค์ประกอบของลายมือชื่ออิเล็กทรอนิกส์ตามบริบทของข้อกฎหมายด้วย
+
+---
+
+### ข้อ 14
+**(พรบ. ธุรกรรม) ข้อใดไม่ใช่องค์ประกอบของลายมือชื่ออิเล็กทรอนิกส์ที่มีผลตามกฎหมาย**
+
+ตัวเลือก:
+- A. ลายเซ็นต้องเป็นตัวเขียนเท่านั้น
+- B. สามารถระบุตัวตนของเจ้าของลายเซ็นได้
+- C. ใช้วิธีการที่เชื่อถือในการเซ็นได้
+- D. สามารถระบุเจตนาตามข้อความที่เซ็นได้
+
+**เฉลย: A**
+คำอธิบาย: ลายเซ็นอิเล็กทรอนิกส์ไม่จำเป็นต้องลงนามด้วยตัวเขียนปากกาพู่กันเท่านั้น การเข้ารหัสเสียง รหัส PIN หรือ OTP ล้วนมีฐานะทางลายมือชื่ออิเล็กทรอนิกส์ที่ชอบด้วยกฎหมายตามเงื่อนไขระบุตัวตน
+
+---
+
+## หมวดจริยธรรม / จริยธรรมทางคอมพิวเตอร์
+
+### ข้อ 15
+**การใช้กล้องวงจรปิดเพื่อตรวจสอบการปฏิบัติงานของพนักงานโดยไม่ได้รับอนุญาต เป็นการกระทำที่ผิดจริยธรรมในลักษณะใด**
+
+ตัวเลือก:
+- A. ความเป็นเจ้าของ
+- B. ความเป็นส่วนตัว
+- C. ความถูกต้อง
+- D. การเข้าถึงข้อมูล
+
+**เฉลย: B**
+คำอธิบาย: การแอบดูพฤติกรรมพนักงานโดยมิชอบด้วยกล้องวงจรปิดโดยไม่ได้รับความยินยอม ถือเป็นการฝ่าฝืนจริยธรรมข้อมูลข่าวสารในเรื่องสิทธิ์ความเป็นส่วนตัว (Privacy) ของบุคคล
+
+---
+
+### ข้อ 16
+**ข้อใดไม่ใช่องค์ประกอบของจริยธรรม**
+
+ตัวเลือก:
+- A. การแสดงออก (Moral conduct)
+- B. ความรู้ (Cognitive)
+- C. ความคิด (Thought)
+- D. ความสำนึก (Affective)
+
+**เฉลย: C**
+คำอธิบาย: องค์ประกอบพื้นฐานจริยธรรมประกอบด้วย ความรู้เชิงพุทธิปัญญา (Cognitive), ความสำนึกสะท้อนจิตใจ (Affective), และจริยวัตรการแสดงออกจริง (Moral conduct) ส่วน "ความคิดเดี่ยว ๆ" ไม่ใช่โครงสร้างโดยตรง
+
+---
+
+### ข้อ 17
+**ข้อใดกล่าวถูกต้อง**
+
+ตัวเลือก:
+- A. การแสดงออก (Moral conduct) คือการที่บุคคลตัดสินใจประพฤติตนในสถานการณ์ต่าง ๆ
+- B. ความสำนึก (Affective) ความเข้าใจในเหตุผลของความถูกต้องแยกออกจากความไม่ถูกต้องได้
+- C. ความคิด (Thought) คือความพอใจ ศรัทธา เลื่อมใส ในจริยธรรมมาเป็นแนวในการประพฤติปฏิบัติ
+- D. ความรู้ (Cognitive) คือการรู้ว่ากฎหมายกำหนดว่าอะไรทำได้ และอะไรทำไม่ได้
+
+**เฉลย: A**
+คำอธิบาย: การแสดงออก (Moral conduct) คือองค์ประกอบสุดท้ายของจริยธรรมที่บอกถึงระดับการประพฤติปฏิบัติและตัดสินใจเลือกทำความดีตามสถานการณ์แวดล้อมจริง
+
+---
+
+### ข้อ 18
+**ข้อใดไม่ถือเป็นจริยธรรม**
+
+ตัวเลือก:
+- A. ไม่มีกฎหมายตัว ขึ้นอยู่กับจิตใต้สำนึกของแต่ละบุคคล
+- B. ผู้ใดไม่ปฏิบัติตามจะต้องได้รับโทษทางกฎหมาย
+- C. เป็นคุณธรรมที่แสดงออกมาให้เป็นที่ปรากฏ
+- D. เป็นเครื่องมือในการควบคุมพฤติกรรมที่ไม่พึงประสงค์ของสังคม
+
+**เฉลย: B**
+คำอธิบาย: จริยธรรมไม่มีโทษปรับหรือโทษจำคุกอย่างเป็นทางการตามกระบวนการยุติธรรมของรัฐ (ไม่มีกฎหมายบังคับโดยตรง) แต่กฎหมายจะมีผลลงโทษเป็นเอกเทศและชัดเจน
+
+---
+
+### ข้อ 19
+**จากข้อความ “คอมพิวเตอร์เป็นทั้งเครื่องมือและเป้าหมายของอาชญากรรมคอมพิวเตอร์” ข้อใดเป็นตัวอย่างของคอมพิวเตอร์ในฐานะที่เป็นเป้าหมายของการก่ออาชญากรรม**
+
+ตัวเลือก:
+- A. การก่อกวนระบบของผู้อื่น
+- B. การถอดรหัสโปรแกรมคอมพิวเตอร์
+- C. การฟอกเงิน
+- D. การโจรกรรมข้อมูล
+
+**เฉลย: A**
+คำอธิบาย: คอมพิวเตอร์ตกเป็น "เป้าหมาย" เมื่อผู้ร้ายพยายามโจมตีหรือแฮกเข้าทำลายระบบเซิร์ฟเวอร์โดยตรง (เช่นการยิงไวรัสหรือ DDoS ก่อกวนระบบ) ส่วนการใช้ฟอกเงินหรือส่งสแปมคอมพิวเตอร์จะทำหน้าที่เป็น "เครื่องมือ"
+
+---
+
+### ข้อ 20
+**ข้อใดไม่ใช่คุณลักษณะของกฎหมาย**
+
+ตัวเลือก:
+- A. บังคับใช้กับทุกคน
+- B. สังคมจะเป็นผู้ตัดสินว่าใครกระทำความผิด
+- C. เป็นคำสั่งหรือข้อบังคับของรัฐ
+- D. มีบทลงโทษเป็นลายลักษณ์อักษร อักษรชัดเจน
+
+**เฉลย: B**
+คำอธิบาย: การตัดสินลงโทษผู้กระทำความผิดตามกฎหมายต้องทำโดยสถาบันยุติธรรมตามกระบวนการรัฐ (ผู้พิพากษา/ศาล) สังคมส่วนใหญ่ไม่สามารถรุมประชาทัณฑ์ตัดสินความผิดตามอำเภอใจได้
+
+---
+
+### ข้อ 21
+**ข้อใดกล่าวถูกต้อง**
+
+ตัวเลือก:
+- A. ความรู้ (Cognitive) คือการรู้ว่ากฎหมายกำหนดว่าอะไรทำได้ และอะไรทำไม่ได้
+- B. ความคิด (Thought) คือความพอใจ ศรัทธา เลื่อมใส ในจริยธรรมมาเป็นแนวในการประพฤติปฏิบัติ
+- C. ความสำนึก (Affective) คือความเข้าใจในเหตุผลของความถูกต้องแยกออกจากความไม่ถูกต้องได้
+- D. การแสดงออก (Moral conduct) คือการที่บุคคลตัดสินใจประพฤติตนในสถานการณ์ต่าง ๆ
+
+**เฉลย: D**
+คำอธิบาย: พฤติกรรมการแสดงออกเชิงจริยธรรม (Moral conduct) หมายถึงการลงมือปฏิบัติจริงเมื่อบุคคลนั้นเลือกทำพฤติกรรมในชีวิตประจำวัน
+
+---
+
+### ข้อ 22
+**คำว่า shareware หมายความว่าอย่างไร**
+
+ตัวเลือก:
+- A. ให้ใช้งานได้ฟรี คัดลอก และเผยแพร่ให้ผู้อื่นได้
+- B. ซื้อดิจิทัล และมีสิทธิ์ใช้
+- C. ให้ทดลองใช้ได้ก่อนที่จะตัดสินใจซื้อ
+- D. เป็นโปรแกรมหรือข้อมูลที่มีคนส่งมาให้
+
+**เฉลย: C**
+คำอธิบาย: Shareware เป็นโปรแกรมการค้าทั่วไปที่จัดจำหน่ายเพื่อให้ผู้ใช้นำไปเปิดใช้งานทดลองชิมลางก่อนจะครบกำหนดชำระเงินซื้อสิทธิ์ขาด (เช่น WinRAR)
+
+---
+
+### ข้อ 23
+**คุณธรรมจริยธรรมเกี่ยวกับการใช้เทคโนโลยีคอมพิวเตอร์และสารสนเทศแล้ว จะกล่าวถึงใน 4 ประเด็นที่รู้จักกันในลักษณะตัวอย่างว่าอะไร**
+
+ตัวเลือก:
+- A. PAPA
+- B. GDPR
+- C. PDPA
+- D. IAAA
+
+**เฉลย: A**
+คำอธิบาย: PAPA คือสัญลักษณ์คุณธรรมจริยธรรมเทคโนโลยีสารสนเทศ 4 ด้าน ประกอบด้วย Privacy (สิทธิ์ส่วนตัว), Accuracy (ความถูกต้อง), Property (ความเป็นเจ้าของ), และ Accessibility (การเข้าใช้งานเข้าถึงระบบ)
+
+---
+
+### ข้อ 24
+**ข้อใดเป็นการกระทำที่ผิดจริยธรรมของคอมพิวเตอร์**
+
+ตัวเลือก:
+- A. สร้างโปรแกรม Virus Computer ที่ก่อให้เกิดความเสียหายแก่ผู้อื่น
+- B. การละเมิดลิขสิทธิ์ซอฟต์แวร์
+- C. การเข้าถึงข้อมูลหรือคอมพิวเตอร์ผู้อื่นโดยไม่ได้รับอนุญาต
+- D. ถูกทุกข้อ
+
+**เฉลย: D**
+คำอธิบาย: การเข้าเจาะแฮกเครื่องผู้อื่น การปล่อยไวรัสบุกรุก และการคัดลอกโปรแกรมโดยไม่มีสิทธิ์ ล้วนเป็นการกระทำความผิดจริยธรรมและ พ.ร.บ.คอมพิวเตอร์ ทุกหัวข้อ
+
+---
+
+## หมวด Cybersecurity / Security Principles
+
+### ข้อ 25
+**(Cybersecurity) บริษัทมีความกังวลเกี่ยวกับการเข้าถึงศูนย์ข้อมูล (Data Center) ทางกายภาพโดยไม่ได้รับอนุญาต การควบคุมใดต่อไปนี้จะมีประสิทธิภาพมากที่สุดในการป้องกันปัญหานี้?**
+
+ตัวเลือก:
+- A. การติดตั้งระบบประตูสองชั้น (Mantrap) ร่วมกับการตรวจสอบสิทธิ์ด้วยชีวมิติ (Installing mantraps with biometric authentication)
+- B. การตรวจสอบประวัติพนักงาน (Conducting background checks on employees)
+- C. การบังคับใช้นโยบายรหัสผ่านที่คาดเดายาก (Implementing a strong password policy)
+- D. การอบรมสร้างความตระหนักรู้ด้านความปลอดภัย (Using security awareness training)
+
+**เฉลย: A**
+คำอธิบาย: ระบบป้องกันการบุกรุกทางกายภาพใน Data Center ที่ดีที่สุดคือการใช้ประตูคู่ (Mantrap) ป้องกันคนเดินตามประกบ (Tailgating) คู่กับการตรวจลายนิ้วมือ/ม่านตา (Biometrics)
+
+---
+
+### ข้อ 26
+**(Cybersecurity) นโยบายความปลอดภัยของบริษัทระบุว่าพนักงานทุกคนต้องใช้รหัสผ่านที่คาดเดายาก เอกสารใดที่จะให้คำแนะนำโดยละเอียดแบบทีละขั้นตอนเกี่ยวกับวิธีการสร้างและจัดการรหัสผ่านเหล่านี้?**
+
+ตัวเลือก:
+- A. มาตรฐานรหัสผ่าน (Password Standard)
+- B. นโยบายการใช้งานที่ยอมรับได้ (Acceptable Use Policy)
+- C. นโยบายความปลอดภัย (Security Policy)
+- D. แนวปฏิบัติเกี่ยวกับรหัสผ่าน (Password Guideline)
+
+**เฉลย: A**
+คำอธิบาย: เอกสารประเภท Standard (มาตรฐาน) จะระบุเกณฑ์กฎเกณฑ์เชิงบังคับทางเทคนิคแบบทีละขั้นตอนอย่างละเอียด ชัดเจน เช่น ความยาว อักขระพิเศษ ต่างจากภาพรวมเชิงหลักการทั่วไปใน Policy
+
+---
+
+### ข้อ 27
+**(Cybersecurity) องค์กรพบว่าผู้บริหารของตนกำลังตกเป็นเป้าหมายของอีเมลฟิชชิ่งที่มีความซับซ้อนเพื่อพยายามขอข้อมูลที่ละเอียดอ่อน การโจมตีทางวิศวกรรมสังคม (Social Engineering) ประเภทใดเป็นตัวอย่างของกรณีนี้?**
+
+ตัวเลือก:
+- A. Phishing (การหลอกลวงทั่วไป)
+- B. Whaling (การหลอกลวงผู้บริหารระดับสูง)
+- C. Baiting (การล่อลวง)
+- D. Pretexting (การสร้างสถานการณ์สมมติ)
+
+**เฉลย: B**
+คำอธิบาย: Whaling (ฟิชชิ่งปลาวาฬ) คือการส่งอีเมลเจาะจงเป้าหมายที่เฉพาะเจาะจงและมีความละเอียดอ่อนสูงไปยังผู้บริหารระดับสูงขององค์กร (เช่น CEO หรือ CFO)
+
+---
+
+### ข้อ 28
+**(Cybersecurity) ในระหว่างการประเมินความเสี่ยง นักวิเคราะห์ความปลอดภัยพบว่าเซิร์ฟเวอร์ที่สำคัญมีช่องโหว่ โดยโอกาสที่จะถูกโจมตีนั้นสูงมาก และผลกระทบจะรุนแรง ตามหลักการจัดการความเสี่ยงพื้นฐาน ขั้นแรกที่ควรดำเนินการคืออะไร?**
+
+ตัวเลือก:
+- A. โอนย้ายความเสี่ยง (Transfer the risk)
+- B. หลีกเลี่ยงความเสี่ยง (Avoid the risk)
+- C. บรรเทาความเสี่ยง (Mitigate the risk)
+- D. ยอมรับความเสี่ยง (Accept the risk)
+
+**เฉลย: C**
+คำอธิบาย: เมื่อพบช่องโหว่ความเสี่ยงระดับสูงที่กระทบต่อเซิร์ฟเวอร์หลัก ขั้นแรกที่ควรดำเนินการคือการบรรเทาความเสียหาย (Mitigation) เช่น การอัปเดตแพตช์ปิดช่องโหว่ทันทีเพื่อลดความสูญเสีย
+
+---
+
+### ข้อ 29
+**(Cybersecurity) ข้อใดคือเป้าหมายหลักของการบังคับใช้หลักการให้สิทธิ์เท่าที่จำเป็น (Principle of least privilege)?**
+
+ตัวเลือก:
+- A. เพื่อให้สอดคล้องกับกฎระเบียบทางกฎหมาย (To comply with legal regulations)
+- B. เพื่อรับประกันความลับของข้อมูล (To ensure data confidentiality)
+- C. เพื่อป้องกันการโจมตีแบบปฏิเสยการให้บริการ (To prevent denial-of-service attacks)
+- D. เพื่อจำกัดความเสียหายที่อาจเกิดขึ้นจากภัยคุกคามภายในองค์กร (To limit the potential damage from insider threats)
+
+**เฉลย: D**
+คำอธิบาย: การจำกัดสิทธิ์ผู้ใช้และสิทธิ์ของแอปพลิเคชันให้ทำงานได้เฉพาะฟังก์ชันที่จำเป็นจริง ๆ (Least Privilege) มีเพื่อลดขอบเขตความเสียหายหากมีใครแปรพักตร์หรือตกเป็นเหยื่อภัยคุกคามภายใน (Insider Threats)
+
+---
+
+### ข้อ 30
+**(Cybersecurity) บริษัทมีความกังวลเกี่ยวกับการเข้าถึงศูนย์ข้อมูล (Data Center) ทางกายภาพโดยไม่ได้รับอนุญาต การควบคุมใดต่อไปนี้จะมีประสิทธิภาพมากที่สุดในการป้องกันปัญหานี้?**
+
+ตัวเลือก:
+- A. การติดตั้งระบบประตูสองชั้น (Mantrap) ร่วมกับการตรวจสอบสิทธิ์ด้วยชีวมิติ (Installing mantraps with biometric authentication)
+- B. การตรวจสอบประวัติพนักงาน (Conducting background checks on employees)
+- C. การบังคับใช้นโยบายรหัสผ่านที่คาดเดายาก (Implementing a strong password policy)
+- D. การอบรมสร้างความตระหนักรู้ด้านความปลอดภัย (Using security awareness training)
+
+**เฉลย: A**
+คำอธิบาย: การใช้ประตูสองชั้นเหลื่อมเวลาเปรียบเทียบม่านตา (Mantrap + Biometrics) มีประสิทธิภาพป้องกันการบุกรุกทางกายภาพใน Data Center ดีที่สุด
+> ข้อนี้เป็นคำถามซ้ำกับข้อ 25
+
+---
+
+### ข้อ 31
+**(Cybersecurity) ในระหว่างการประเมินความเสี่ยง นักวิเคราะห์ความปลอดภัยพบว่าเซิร์ฟเวอร์ที่สำคัญมีช่องโหว่ โดยโอกาสที่จะถูกโจมตีนั้นสูงมาก และผลกระทบจะรุนแรง ตามหลักการจัดการความเสี่ยงพื้นฐาน ขั้นแรกที่ควรดำเนินการคืออะไร?**
+
+ตัวเลือก:
+- A. ยอมรับความเสี่ยง (Accept the risk)
+- B. โอนย้ายความเสี่ยง (Transfer the risk)
+- C. บรรเทาความเสี่ยง (Mitigate the risk)
+- D. หลีกเลี่ยงความเสี่ยง (Avoid the risk)
+
+**เฉลย: C**
+คำอธิบาย: การรับมือความเสี่ยงสูงระดับเซิร์ฟเวอร์เสียหาย วิธีแรกสุดตามหลักการคือต้องบรรเทาความสูญเสีย (Mitigation) ด้วยการหาวิธีจำกัดช่องโหว่
+> ข้อนี้เป็นคำถามซ้ำกับข้อ 28 แต่สลับลำดับตัวเลือก
+
+---
+
+### ข้อ 32
+**(Cybersecurity) องค์กรต้องการให้พนักงานเข้าใจถึงความรับผิดชอบของตนเกี่ยวกับความปลอดภัยของข้อมูล วิธีใดต่อไปนี้เป็นวิธีที่ดีที่สุดในการบรรลุเป้าหมายนี้?**
+
+ตัวเลือก:
+- A. จัดอบรมสร้างความตระหนักรู้ด้านความปลอดภัยเป็นประจำ (Conducting regular security awareness training)
+- B. สแกนหาช่องโหว่ระบบ (Performing vulnerability scans)
+- C. บังคับใช้นโยบายรหัสผ่านที่คาดเดายาก (Enforcing a strong password policy)
+- D. ติดตั้งไฟร์วอลล์ (Implementing a firewall)
+
+**เฉลย: A**
+คำอธิบาย: การสร้างความรู้ความเข้าใจบทบาทหน้าที่ความปลอดภัยให้กับมนุษย์ในองค์กร มีวิธีเดียวที่ดีที่สุดคือจัดเทรนนิ่งสร้างความตระหนักรู้อย่างสม่ำเสมอ (Security Awareness Training)
+
+---
+
+### ข้อ 33
+**(Cybersecurity) นักวิเคราะห์ความปลอดภัยทางไซเบอร์พบว่าบัญชีของผู้ใช้รายหนึ่งถูกบุกรุก บัญชีนี้มีสิทธิ์เข้าถึงข้อมูลทางการเงินที่ละเอียดอ่อน แต่นักวิเคราะห์ไม่แน่ใจว่าผู้โจมตีเข้าถึงข้อมูลนั้นแล้วหรือยัง หลักการความปลอดภัยข้อใดต่อไปนี้มีความเสี่ยงมากที่สุด?**
+
+ตัวเลือก:
+- A. การห้ามปฏิเสธความรับผิดชอบ (Non-repudiation)
+- B. ความลับของข้อมูล (Confidentiality)
+- C. ความถูกต้องแท้จริงของข้อมูล (Integrity)
+- D. ความพร้อมใช้งานของข้อมูล (Availability)
+
+**เฉลย: B**
+คำอธิบาย: เมื่อบัญชีถูกควบคุมและแฮกโดยบุคคลภายนอก ข้อมูลส่วนบุคคลที่จัดเก็บไว้ตกอยู่ในความเสี่ยงด้านความลับ (Confidentiality) เนื่องจากอาจหลุดรั่วไหลไปสู่บุคคลอื่นที่ไม่ได้รับอนุญาต
+
+---
+
+### ข้อ 34
+**(Cybersecurity) องค์กรจำเป็นต้องติดตั้งระบบที่ช่วยให้มั่นใจได้ว่าผู้ใช้ไม่สามารถปฏิเสธว่าตนเองไม่ได้ส่งอีเมลได้ แนวคิดด้านความปลอดภัยข้อใดต่อไปนี้มีความเกี่ยวข้องมากที่สุด?**
+
+ตัวเลือก:
+- A. ความลับของข้อมูล (Confidentiality)
+- B. การอนุญาตสิทธิ์ (Authorization)
+- C. การพิสูจน์ตัวตน (Authentication)
+- D. การห้ามปฏิเสธความรับผิดชอบ (Non-repudiation)
+
+**เฉลย: D**
+คำอธิบาย: Non-repudiation (การห้ามปฏิเสธความรับผิดชอบ) เป็นแนวคิดที่ใช้พิสูจน์ธุรกรรมด้วยการทำลายมือชื่อดิจิทัลและคู่กุญแจคู่ เพื่อผูกมัดว่าผู้ส่งคือเจ้าของกุญแจส่วนตัวจริงและไม่สามารถปฏิเสธการส่งได้
+
+---
+
+### ข้อ 35
+**(Cybersecurity) องค์กรแห่งหนึ่งกำลังประเมินว่าตนเองยินดียอมรับความเสี่ยงได้มากน้อยเพียงใดเพื่อให้บรรลุเป้าหมายทางธุรกิจ แนวคิดการจัดการความเสี่ยงข้อใดอธิบายกรณีนี้ได้ดีที่สุด?**
+
+ตัวเลือก:
+- A. ระดับความเสี่ยงที่ยอมรับได้ (Risk appetite)
+- B. เกณฑ์เบี่ยงเบนความเสี่ยงที่ยอมรับได้ (Risk tolerance)
+- C. ความเสี่ยงที่หลงเหลืออยู่ (Residual risk)
+- D. ความสามารถในการรองรับความเสี่ยง (Risk capacity)
+
+**เฉลย: A**
+คำอธิบาย: ระดับความเสี่ยงที่รับได้ (Risk appetite) คือปริมาณระดับความเสี่ยงในภาพกว้างที่สภาผู้บริหารขององค์กรพึงใจจะยอมรับเพื่อแลกกับการบรรลุผลเป้าหมายทางธุรกิจ
+
+---
+
+### ข้อ 36
+**(Cybersecurity) นโยบายความปลอดภัยของบริษัทระบุว่าพนักงานทุกคนต้องใช้รหัสผ่านที่คาดเดายาก เอกสารใดที่จะให้คำแนะนำโดยละเอียดแบบทีละขั้นตอนเกี่ยวกับวิธีการสร้างและจัดการรหัสผ่านเหล่านี้?**
+
+ตัวเลือก:
+- A. แนวปฏิบัติเกี่ยวกับรหัสผ่าน (Password Guideline)
+- B. นโยบายความปลอดภัย (Security Policy)
+- C. มาตรฐานรหัสผ่าน (Password Standard)
+- D. นโยบายการใช้งานที่ยอมรับได้ (Acceptable Use Policy)
+
+**เฉลย: C**
+คำอธิบาย: มาตรฐานรหัสผ่าน (Password Standard) มีลักษณะเป็นเอกสารขั้นตอนการปฏิบัติงานเพื่อสั่งและบังคับใช้งานความยาวของพาสเวิร์ดอย่างเป็นรูปธรรม
+> ข้อนี้เป็นคำถามซ้ำกับข้อ 26 แต่สลับลำดับตัวเลือก
+
+---
+
+### ข้อ 37
+**(Cybersecurity) ผู้จัดการฝ่ายความปลอดภัยกำลังทบทวนมาตรการควบคุมความปลอดภัยทางกายภาพสำหรับศูนย์ข้อมูล (Data Center) มาตรการควบคุมใดต่อไปนี้ถือเป็นมาตรการควบคุมประเภทการตรวจจับ (Detective control)?**
+
+ตัวเลือก:
+- A. รั้ว (A fence)
+- B. ประตูกั้นหมุน (A turnstile)
+- C. ระบบกล้องวงจรปิด (A CCTV system)
+- D. ประตูที่ล็อกไว้ (A locked door)
+
+**เฉลย: C**
+คำอธิบาย: ระบบกล้องวงจรปิด CCTV ถือเป็นมาตรการควบคุมประเภทการตรวจจับและตรวจสอบเหตุ (Detective Control) เพื่อตรวจจับกิจกรรมที่เกิดขึ้น ต่างจากรั้วหรือประตูที่เป็นการป้องกัน (Preventive Control)
+
+---
+
+### ข้อ 38
+**(Cybersecurity) ผู้จัดการฝ่ายความปลอดภัยกำลังทบทวนมาตรการควบคุมความปลอดภัยทางกายภาพสำหรับศูนย์ข้อมูล (Data Center) มาตรการควบคุมใดต่อไปนี้ถือเป็นมาตรการควบคุมประเภทการตรวจจับ (Detective control)?**
+
+ตัวเลือก:
+- A. รั้ว (A fence)
+- B. ประตูกั้นหมุน (A turnstile)
+- C. ระบบกล้องวงจรปิด (A CCTV system)
+- D. ประตูที่ล็อกไว้ (A locked door)
+
+**เฉลย: C**
+คำอธิบาย: กล้อง CCTV บันทึกตรวจหาผู้ฝ่าฝืนระบบความปลอดภัยทางกายภาพเพื่อดำเนินการสอบสวนย้อนหลัง จึงมีบทบาทในการตรวจจับ (Detective Control)
+> ข้อนี้เป็นคำถามซ้ำกับข้อ 37
+
+---
+
+## หมวด พ.ร.บ.คอมพิวเตอร์
+
+### ข้อ 39
+**(พรบ.คอมพ์) จากข่าว พลเมืองต่อต้าน Single Gatewayฯ ได้โพสต์ภาพที่ได้จากการบันทึกหน้าเว็บ 3 ภาพ พร้อมอ้างว่าสามารถแยกระบบของกองทัพภาคที่ 2 (ทภ.2) ได้เป็นที่เรียบร้อย อีกทั้งอ้างตัวอย่างงบประมาณหลักของทหารหน่วยคือการขุดลอกแหล่งน้ำปี 2559 ซึ่งมีการตั้งงบไว้ราว 184 ล้านบาท จากทั้งหมด 224 ล้านบาท จากข่าว พลเมืองคนดังกล่าว ทำผิด พรบ.คอมพ์ มาตราใดบ้าง**
+
+ตัวเลือก:
+- A. มาตราที่ 12
+- B. มาตราที่ 5,7,12
+- C. มาตราที่ 14
+- D. มาตราที่ 5,7
+
+**เฉลย: B**
+คำอธิบาย: การเข้าถึงระบบเซิร์ฟเวอร์โดยไม่ได้รับอนุญาต (มาตรา 5), การเจาะดึงข้อมูลภายในระบบโดยมิชอบ (มาตรา 7) และการมุ่งเป้าข้อมูลที่ส่งผลต่อระบบความปลอดภัยมั่นคงของประเทศ (มาตรา 12) ล้วนมีฐานความผิดร่วมกันในคดีข่าวนี้
+
+---
+
+### ข้อ 40
+**(พรบ.คอมพ์) การเปิดเผยมาตรการป้องกันการเข้าถึงระบบคอมพิวเตอร์ เข้าข่ายผิดมาตราใด**
+
+ตัวเลือก:
+- A. มาตรา 12
+- B. มาตรา 7
+- C. มาตรา 6
+- D. มาตรา 8
+- E. มาตรา 9
+
+**เฉลย: C**
+คำอธิบาย: มาตรา 6 ของ พ.ร.บ.คอมพิวเตอร์ กำหนดโทษกรณีที่บุคคลใดนำมาตรการป้องกันการเข้าถึงระบบที่ผู้อื่นสร้างไว้เฉพาะไปเปิดเผยต่อบุคคลอื่นโดยมิชอบ (เช่น การแชร์รหัสล็อกอินหรือเปิดช่องโหว่ระบบ)
+
+---
+
+### ข้อ 41
+**(พรบ.คอมพ์) ศาลฎีกาพิพากษายืน ผอ.ประชาไท ผิด พ.ร.บ.คอมพิวเตอร์ กรณีปิดความคิดเห็นในเว็บบอร์ดช้าจากข่าว : ผอ.ประชาไท ทำผิด พรบ.คอมพ์ มาตราใดบ้าง**
+
+ตัวเลือก:
+- A. มาตราที่ 15
+- B. มาตราที่ 14
+- C. มาตราที่ 12,14
+- D. มาตราที่ 12
+
+**เฉลย: A**
+คำอธิบาย: มาตรา 15 บัญญัติความผิดสำหรับผู้ให้บริการ (เช่น เจ้าของเว็บบอร์ด) ที่ให้ความยินยอมหรือร่วมมือให้มีการเผยแพร่ข้อมูลผิดกฎหมาย หากได้รับแจ้งและล่าช้าในการลบออก ศาลพิพากษาคดีประชาไทว่ามีความผิดในมาตรานี้
+
+---
+
+### ข้อ 42
+**(พรบ.คอมพ์) การป้อนโปรแกรมที่มีไวรัสทำลายข้อมูลหรือโปรแกรมคอมพิวเตอร์ เข้าข่ายผิดมาตราใด**
+
+ตัวเลือก:
+- A. มาตรา 10
+- B. มาตรา 5
+- C. มาตรา 7
+- D. มาตรา 9
+
+**เฉลย: D**
+คำอธิบาย: มาตรา 9 ระบุถึงความผิดฐานทำให้เสียหาย ทำลาย แก้ไข ดัดแปลง หรือเพิ่มเติมข้อมูลคอมพิวเตอร์ของผู้อื่นโดยมิชอบ ซึ่งการป้อนไวรัสเข้าไปทำลายไฟล์ของผู้อื่นถือเป็นความผิดตรงตามมาตรานี้
+
+---
+
+### ข้อ 43
+**(พรบ.คอมพ์) ข้อใดคือข้อมูลเกี่ยวกับการติดต่อสื่อสารของระบบคอมพิวเตอร์**
+
+ตัวเลือก:
+- A. “ข้อมูลคอมพิวเตอร์”
+- B. “ข้อมูลจราจรทางคอมพิวเตอร์”
+- C. “ข้อมูลอิเล็กทรอนิกส์”
+- D. “ระบบคอมพิวเตอร์”
+
+**เฉลย: B**
+คำอธิบาย: ข้อมูลจราจรทางคอมพิวเตอร์ (Log files หรือ Traffic Data) คือ ข้อมูลเกี่ยวกับประวัติการเชื่อมต่อ แหล่งกำเนิด ต้นทาง ปลายทาง เส้นทาง เวลา วันที่ ปริมาณ และประเภทของข้อมูลการสื่อสารคอมพิวเตอร์
+
+---
+
+### ข้อ 44
+**(พรบ.คอมพ์) ถ้าคุณไป hack รหัสผ่านของระบบ www.src.ku.ac.th แล้วนำรหัสผ่านเหล่านั้นมาโพสต์เพื่อโชว์ความเก่งกาจของคุณ จะถือว่ามีความผิดในมาตราใดบ้าง**
+
+ตัวเลือก:
+- A. มาตราที่ 5,7
+- B. มาตราที่ 7
+- C. มาตราที่ 6
+- D. มาตราที่ 5,6,7
+
+**เฉลย: D**
+คำอธิบาย: การเข้าถึงระบบ (มาตรา 5), การดึงข้อมูลรหัสผ่านที่ไม่มีสิทธิ์โดยมิชอบ (มาตรา 7) และการนำรหัสผ่านมาตรการป้องกันการเข้าใช้งานของผู้อื่นไปเผยแพร่สาธารณะ (มาตรา 6) ถือเป็นความผิดครอบคลุมทั้ง 3 มาตรา
+
+---
+
+### ข้อ 45
+**(พรบ.คอมพ์) การที่รัฐจะเข้าไปสอดแนมหรือล้วงข้อมูลการติดต่อสื่อสารของประชาชน ถือว่าผิดมาตราใด**
+
+ตัวเลือก:
+- A. มาตรา 8
+- B. ไม่ผิด สามารถทำได้ เพราะเป็นรัฐบาล
+- C. มาตรา 5
+- D. มาตรา 7
+
+**เฉลย: A**
+คำอธิบาย: มาตรา 8 บัญญัติความผิดฐานดักรับข้อมูลคอมพิวเตอร์ของผู้อื่นโดยมิชอบที่อยู่ระหว่างการส่ง แม้เป็นฝ่ายรัฐบาลก็ไม่สามารถดักรับข้อมูลของประชาชนโดยไม่มีอำนาจและคำสั่งศาลรองรับตามกระบวนการยุติธรรมได้
+
+---
+
+### ข้อ 46
+**(พรบ.คอมพ์) ถ้าคุณไป view source ของเพจ www.google.com ถือเป็นการกระทำความผิดข้อใด**
+
+ตัวเลือก:
+- A. มาตรา 6
+- B. ไม่ผิด เพราะถือเป็นการเข้าถึงข้อมูลที่ไม่มีมาตรการป้องกันเฉพาะ
+- C. มาตรา 5
+- D. มาตรา 7
+
+**เฉลย: B**
+คำอธิบาย: การกด View Source หน้าเว็บเป็นการอ่านข้อมูลโค้ดฝั่ง Client ที่ถูกส่งมาแสดงผลต่อสาธารณะ ไม่มีมาตรการป้องกันการเข้าถึงแต่อย่างใด จึงไม่ผิดกฎหมายคอมพิวเตอร์ข้อใดเลย
+
+---
+
+### ข้อ 47
+**(พรบ.คอมพ์) การใช้ email ที่เป็นนามแฝงเพื่อส่งข้อความให้คนทั้งมหาวิทยาลัย ถือว่าผิดตามมาตราใด**
+
+ตัวเลือก:
+- A. มาตราที่ 14
+- B. จากข้อมูลเพียงเท่านี้ ไม่ถือว่าผิดมาตราใด ๆ
+- C. มาตราที่ 13
+- D. มาตราที่ 11
+
+**เฉลย: B**
+คำอธิบาย: การส่งอีเมลด้วยนามแฝง (Alias) เพื่อแจ้งข่าวสารทั่วไปในหมู่สมาชิก ไม่เป็นความผิดใด ๆ หากเนื้อหาไม่เป็นภัยคุกคาม และไม่ได้ส่งสแปมโฆษณาในปริมาณที่ก่อกวนระบบอย่างรุนแรง
+
+---
+
+### ข้อ 48
+**(พรบ.คอมพ์) จากข่าว ASIASOFT ร่วมมือ ปอท. จับโปรแกรมช่วยเล่นเกม จากข่าว : ผู้ใช้บอทเล่นเกมส์ ผิดมาตราใด**
+
+ตัวเลือก:
+- A. มาตราที่ 5,7
+- B. มาตราที่ 13
+- C. มาตราที่ 9
+- D. มาตราที่ 8
+
+**เฉลย: C**
+คำอธิบาย: ศาลฎีกาเคยพิพากษาคดีโปรแกรมช่วยเล่นเกม (บอท) ว่าผู้ใช้นำโปรแกรมบอทเข้าแทรกแซงและดัดแปลงการทำงานปกติของซอฟต์แวร์เกม ซึ่งนับเป็นการทำลายหรือแก้ไขข้อมูลผู้อื่นโดยมิชอบตามมาตรา 9
+
+---
+
+### ข้อ 49
+**(พรบ.คอมพ์) ถ้าคุณเป็น system admin ของระบบลงทะเบียน “ซิม ช็อป ใช้” แล้วไปปิดระบบเพื่อทำการ maintenance ทำให้ประชาชนไม่สามารถเข้าถึงได้ ถือว่ากระทำความผิดมาตราใด**
+
+ตัวเลือก:
+- A. ไม่ผิด เพราะถือเป็นการปฏิบัติงานในหน้าที่
+- B. มาตราที่ 10
+- C. มาตราที่ 9
+- D. มาตราที่ 8
+
+**เฉลย: A**
+คำอธิบาย: ผู้ดูแลระบบที่มีสิทธิ์มีหน้าที่ในการปิดบำรุงรักษาระบบ (Maintenance) ตามแผนงาน ไม่มีเจตนากระทำผิดหรือก่อกวนให้เกิดความเสียหายกับผู้อื่น จึงไม่ถือว่ามีความผิดฐานเข้าโจมตีระบบให้ขัดข้องแต่ประการใด
+
+  </script>�ยนเท่านั้น**
+
+---
+
+## หมวดจริยธรรม / จริยธรรมทางคอมพิวเตอร์
+
+### ข้อ 15
+**การใช้กล้องวงจรปิดเพื่อตรวจสอบการปฏิบัติงานของพนักงานโดยไม่ได้รับอนุญาต เป็นการกระทำที่ผิดจริยธรรมในลักษณะใด**
+
+ตัวเลือก:
+- A. ความเป็นเจ้าของ
+- B. ความเป็นส่วนตัว
+- C. ความถูกต้อง
+- D. การเข้าถึงข้อมูล
+
+**เฉลย: B. ความเป็นส่วนตัว**
+
+---
+
+### ข้อ 16
+**ข้อใดไม่ใช่องค์ประกอบของจริยธรรม**
+
+ตัวเลือก:
+- A. การแสดงออก (Moral conduct)
+- B. ความรู้ (Cognitive)
+- C. ความคิด (Thought)
+- D. ความสำนึก (Affective)
+
+**เฉลย: C. ความคิด (Thought)**
+
+---
+
+### ข้อ 17
+**ข้อใดกล่าวถูกต้อง**
+
+ตัวเลือก:
+- A. การแสดงออก (Moral conduct) คือการที่บุคคลตัดสินใจประพฤติตนในสถานการณ์ต่าง ๆ
+- B. ความสำนึก (Affective) ความเข้าใจในเหตุผลของความถูกต้องแยกออกจากความไม่ถูกต้องได้
+- C. ความคิด (Thought) คือความพอใจ ศรัทธา เลื่อมใส ในจริยธรรมมาเป็นแนวในการประพฤติปฏิบัติ
+- D. ความรู้ (Cognitive) คือการรู้ว่ากฎหมายกำหนดว่าอะไรทำได้ และอะไรทำไม่ได้
+
+**เฉลย: A. การแสดงออก (Moral conduct) คือการที่บุคคลตัดสินใจประพฤติตนในสถานการณ์ต่าง ๆ**
+
+---
+
+### ข้อ 18
+**ข้อใดไม่ถือเป็นจริยธรรม**
+
+ตัวเลือก:
+- A. ไม่มีกฎหมายตัว ขึ้นอยู่กับจิตใต้สำนึกของแต่ละบุคคล
+- B. ผู้ใดไม่ปฏิบัติตามจะต้องได้รับโทษทางกฎหมาย
+- C. เป็นคุณธรรมที่แสดงออกมาให้เป็นที่ปรากฏ
+- D. เป็นเครื่องมือในการควบคุมพฤติกรรมที่ไม่พึงประสงค์ของสังคม
+
+**เฉลย: B. ผู้ใดไม่ปฏิบัติตามจะต้องได้รับโทษทางกฎหมาย**
+
+---
+
+### ข้อ 19
+**จากข้อความ “คอมพิวเตอร์เป็นทั้งเครื่องมือและเป้าหมายของอาชญากรรมคอมพิวเตอร์” ข้อใดเป็นตัวอย่างของคอมพิวเตอร์ในฐานะที่เป็นเป้าหมายของการก่ออาชญากรรม**
+
+ตัวเลือก:
+- A. การก่อกวนระบบของผู้อื่น
+- B. การถอดรหัสโปรแกรมคอมพิวเตอร์
+- C. การฟอกเงิน
+- D. การโจรกรรมข้อมูล
+
+**เฉลย: A. การก่อกวนระบบของผู้อื่น**
+
+---
+
+### ข้อ 20
+**ข้อใดไม่ใช่คุณลักษณะของกฎหมาย**
+
+ตัวเลือก:
+- A. บังคับใช้กับทุกคน
+- B. สังคมจะเป็นผู้ตัดสินว่าใครกระทำความผิด
+- C. เป็นคำสั่งหรือข้อบังคับของรัฐ
+- D. มีบทลงโทษเป็นลายลักษณ์อักษร อักษรชัดเจน
+
+**เฉลย: B. สังคมจะเป็นผู้ตัดสินว่าใครกระทำความผิด**
+
+---
+
+### ข้อ 21
+**ข้อใดกล่าวถูกต้อง**
+
+ตัวเลือก:
+- A. ความรู้ (Cognitive) คือการรู้ว่ากฎหมายกำหนดว่าอะไรทำได้ และอะไรทำไม่ได้
+- B. ความคิด (Thought) คือความพอใจ ศรัทธา เลื่อมใส ในจริยธรรมมาเป็นแนวในการประพฤติปฏิบัติ
+- C. ความสำนึก (Affective) คือความเข้าใจในเหตุผลของความถูกต้องแยกออกจากความไม่ถูกต้องได้
+- D. การแสดงออก (Moral conduct) คือการที่บุคคลตัดสินใจประพฤติตนในสถานการณ์ต่าง ๆ
+
+**เฉลย: D. การแสดงออก (Moral conduct) คือการที่บุคคลตัดสินใจประพฤติตนในสถานการณ์ต่าง ๆ**
+
+---
+
+### ข้อ 22
+**คำว่า shareware หมายความว่าอย่างไร**
+
+ตัวเลือก:
+- A. ให้ใช้งานได้ฟรี คัดลอก และเผยแพร่ให้ผู้อื่นได้
+- B. ซื้อดิจิทัล และมีสิทธิ์ใช้
+- C. ให้ทดลองใช้ได้ก่อนที่จะตัดสินใจซื้อ
+- D. เป็นโปรแกรมหรือข้อมูลที่มีคนส่งมาให้
+
+**เฉลย: C. ให้ทดลองใช้ได้ก่อนที่จะตัดสินใจซื้อ**
+
+---
+
+### ข้อ 23
+**คุณธรรมจริยธรรมเกี่ยวกับการใช้เทคโนโลยีคอมพิวเตอร์และสารสนเทศแล้ว จะกล่าวถึงใน 4 ประเด็นที่รู้จักกันในลักษณะตัวอย่างว่าอะไร**
+
+ตัวเลือก:
+- A. PAPA
+- B. GDPR
+- C. PDPA
+- D. IAAA
+
+**เฉลย: A. PAPA**
+
+---
+
+### ข้อ 24
+**ข้อใดเป็นการกระทำที่ผิดจริยธรรมของคอมพิวเตอร์**
+
+ตัวเลือก:
+- A. สร้างโปรแกรม Virus Computer ที่ก่อให้เกิดความเสียหายแก่ผู้อื่น
+- B. การละเมิดลิขสิทธิ์ซอฟต์แวร์
+- C. การเข้าถึงข้อมูลหรือคอมพิวเตอร์ผู้อื่นโดยไม่ได้รับอนุญาต
+- D. ถูกทุกข้อ
+
+**เฉลย: D. ถูกทุกข้อ**
+
+---
+
+## หมวด Cybersecurity / Security Principles
+
+### ข้อ 25
+**(Cybersecurity) บริษัทมีความกังวลเกี่ยวกับการเข้าถึงศูนย์ข้อมูล (Data Center) ทางกายภาพโดยไม่ได้รับอนุญาต การควบคุมใดต่อไปนี้จะมีประสิทธิภาพมากที่สุดในการป้องกันปัญหานี้?**
+
+ตัวเลือก:
+- A. การติดตั้งระบบประตูสองชั้น (Mantrap) ร่วมกับการตรวจสอบสิทธิ์ด้วยชีวมิติ (Installing mantraps with biometric authentication)
+- B. การตรวจสอบประวัติพนักงาน (Conducting background checks on employees)
+- C. การบังคับใช้นโยบายรหัสผ่านที่คาดเดายาก (Implementing a strong password policy)
+- D. การอบรมสร้างความตระหนักรู้ด้านความปลอดภัย (Using security awareness training)
+
+**เฉลย: A. การติดตั้งระบบประตูสองชั้น (Mantrap) ร่วมกับการตรวจสอบสิทธิ์ด้วยชีวมิติ (Installing mantraps with biometric authentication)**
+
+---
+
+### ข้อ 26
+**(Cybersecurity) นโยบายความปลอดภัยของบริษัทระบุว่าพนักงานทุกคนต้องใช้รหัสผ่านที่คาดเดายาก เอกสารใดที่จะให้คำแนะนำโดยละเอียดแบบทีละขั้นตอนเกี่ยวกับวิธีการสร้างและจัดการรหัสผ่านเหล่านี้?**
+
+ตัวเลือก:
+- A. มาตรฐานรหัสผ่าน (Password Standard)
+- B. นโยบายการใช้งานที่ยอมรับได้ (Acceptable Use Policy)
+- C. นโยบายความปลอดภัย (Security Policy)
+- D. แนวปฏิบัติเกี่ยวกับรหัสผ่าน (Password Guideline)
+
+**เฉลย: A. มาตรฐานรหัสผ่าน (Password Standard)**
+
+---
+
+### ข้อ 27
+**(Cybersecurity) องค์กรพบว่าผู้บริหารของตนกำลังตกเป็นเป้าหมายของอีเมลฟิชชิ่งที่มีความซับซ้อนเพื่อพยายามขอข้อมูลที่ละเอียดอ่อน การโจมตีทางวิศวกรรมสังคม (Social Engineering) ประเภทใดเป็นตัวอย่างของกรณีนี้?**
+
+ตัวเลือก:
+- A. Phishing (การหลอกลวงทั่วไป)
+- B. Whaling (การหลอกลวงผู้บริหารระดับสูง)
+- C. Baiting (การล่อลวง)
+- D. Pretexting (การสร้างสถานการณ์สมมติ)
+
+**เฉลย: B. Whaling (การหลอกลวงผู้บริหารระดับสูง)**
+
+---
+
+### ข้อ 28
+**(Cybersecurity) ในระหว่างการประเมินความเสี่ยง นักวิเคราะห์ความปลอดภัยพบว่าเซิร์ฟเวอร์ที่สำคัญมีช่องโหว่ โดยโอกาสที่จะถูกโจมตีนั้นสูงมาก และผลกระทบจะรุนแรง ตามหลักการจัดการความเสี่ยงพื้นฐาน ขั้นแรกที่ควรดำเนินการคืออะไร?**
+
+ตัวเลือก:
+- A. โอนย้ายความเสี่ยง (Transfer the risk)
+- B. หลีกเลี่ยงความเสี่ยง (Avoid the risk)
+- C. บรรเทาความเสี่ยง (Mitigate the risk)
+- D. ยอมรับความเสี่ยง (Accept the risk)
+
+**เฉลย: C. บรรเทาความเสี่ยง (Mitigate the risk)**
+
+---
+
+### ข้อ 29
+**(Cybersecurity) ข้อใดคือเป้าหมายหลักของการบังคับใช้หลักการให้สิทธิ์เท่าที่จำเป็น (Principle of least privilege)?**
+
+ตัวเลือก:
+- A. เพื่อให้สอดคล้องกับกฎระเบียบทางกฎหมาย (To comply with legal regulations)
+- B. เพื่อรับประกันความลับของข้อมูล (To ensure data confidentiality)
+- C. เพื่อป้องกันการโจมตีแบบปฏิเสธการให้บริการ (To prevent denial-of-service attacks)
+- D. เพื่อจำกัดความเสียหายที่อาจเกิดขึ้นจากภัยคุกคามภายในองค์กร (To limit the potential damage from insider threats)
+
+**เฉลย: D. เพื่อจำกัดความเสียหายที่อาจเกิดขึ้นจากภัยคุกคามภายในองค์กร (To limit the potential damage from insider threats)**
+
+---
+
+### ข้อ 30
+**(Cybersecurity) บริษัทมีความกังวลเกี่ยวกับการเข้าถึงศูนย์ข้อมูล (Data Center) ทางกายภาพโดยไม่ได้รับอนุญาต การควบคุมใดต่อไปนี้จะมีประสิทธิภาพมากที่สุดในการป้องกันปัญหานี้?**
+
+ตัวเลือก:
+- A. การติดตั้งระบบประตูสองชั้น (Mantrap) ร่วมกับการตรวจสอบสิทธิ์ด้วยชีวมิติ (Installing mantraps with biometric authentication)
+- B. การตรวจสอบประวัติพนักงาน (Conducting background checks on employees)
+- C. การบังคับใช้นโยบายรหัสผ่านที่คาดเดายาก (Implementing a strong password policy)
+- D. การอบรมสร้างความตระหนักรู้ด้านความปลอดภัย (Using security awareness training)
+
+**เฉลย: A. การติดตั้งระบบประตูสองชั้น (Mantrap) ร่วมกับการตรวจสอบสิทธิ์ด้วยชีวมิติ (Installing mantraps with biometric authentication)**
+
+> ข้อนี้เป็นคำถามซ้ำกับข้อ 25
+
+---
+
+### ข้อ 31
+**(Cybersecurity) ในระหว่างการประเมินความเสี่ยง นักวิเคราะห์ความปลอดภัยพบว่าเซิร์ฟเวอร์ที่สำคัญมีช่องโหว่ โดยโอกาสที่จะถูกโจมตีนั้นสูงมาก และผลกระทบจะรุนแรง ตามหลักการจัดการความเสี่ยงพื้นฐาน ขั้นแรกที่ควรดำเนินการคืออะไร?**
+
+ตัวเลือก:
+- A. ยอมรับความเสี่ยง (Accept the risk)
+- B. โอนย้ายความเสี่ยง (Transfer the risk)
+- C. บรรเทาความเสี่ยง (Mitigate the risk)
+- D. หลีกเลี่ยงความเสี่ยง (Avoid the risk)
+
+**เฉลย: C. บรรเทาความเสี่ยง (Mitigate the risk)**
+
+> ข้อนี้เป็นคำถามซ้ำกับข้อ 28 แต่สลับลำดับตัวเลือก
+
+---
+
+### ข้อ 32
+**(Cybersecurity) องค์กรต้องการให้พนักงานเข้าใจถึงความรับผิดชอบของตนเกี่ยวกับความปลอดภัยของข้อมูล วิธีใดต่อไปนี้เป็นวิธีที่ดีที่สุดในการบรรลุเป้าหมายนี้?**
+
+ตัวเลือก:
+- A. จัดอบรมสร้างความตระหนักรู้ด้านความปลอดภัยเป็นประจำ (Conducting regular security awareness training)
+- B. สแกนหาช่องโหว่ระบบ (Performing vulnerability scans)
+- C. บังคับใช้นโยบายรหัสผ่านที่คาดเดายาก (Enforcing a strong password policy)
+- D. ติดตั้งไฟร์วอลล์ (Implementing a firewall)
+
+**เฉลย: A. จัดอบรมสร้างความตระหนักรู้ด้านความปลอดภัยเป็นประจำ (Conducting regular security awareness training)**
+
+---
+
+### ข้อ 33
+**(Cybersecurity) นักวิเคราะห์ความปลอดภัยทางไซเบอร์พบว่าบัญชีของผู้ใช้รายหนึ่งถูกบุกรุก บัญชีนี้มีสิทธิ์เข้าถึงข้อมูลทางการเงินที่ละเอียดอ่อน แต่นักวิเคราะห์ไม่แน่ใจว่าผู้โจมตีเข้าถึงข้อมูลนั้นแล้วหรือยัง หลักการความปลอดภัยข้อใดต่อไปนี้มีความเสี่ยงมากที่สุด?**
+
+ตัวเลือก:
+- A. การห้ามปฏิเสธความรับผิดชอบ (Non-repudiation)
+- B. ความลับของข้อมูล (Confidentiality)
+- C. ความถูกต้องแท้จริงของข้อมูล (Integrity)
+- D. ความพร้อมใช้งานของข้อมูล (Availability)
+
+**เฉลย: B. ความลับของข้อมูล (Confidentiality)**
+
+---
+
+### ข้อ 34
+**(Cybersecurity) องค์กรจำเป็นต้องติดตั้งระบบที่ช่วยให้มั่นใจได้ว่าผู้ใช้ไม่สามารถปฏิเสธว่าตนเองไม่ได้ส่งอีเมลได้ แนวคิดด้านความปลอดภัยข้อใดต่อไปนี้มีความเกี่ยวข้องมากที่สุด?**
+
+ตัวเลือก:
+- A. ความลับของข้อมูล (Confidentiality)
+- B. การอนุญาตสิทธิ์ (Authorization)
+- C. การพิสูจน์ตัวตน (Authentication)
+- D. การห้ามปฏิเสธความรับผิดชอบ (Non-repudiation)
+
+**เฉลย: D. การห้ามปฏิเสธความรับผิดชอบ (Non-repudiation)**
+
+---
+
+### ข้อ 35
+**(Cybersecurity) องค์กรแห่งหนึ่งกำลังประเมินว่าตนเองยินดียอมรับความเสี่ยงได้มากน้อยเพียงใดเพื่อให้บรรลุเป้าหมายทางธุรกิจ แนวคิดการจัดการความเสี่ยงข้อใดอธิบายกรณีนี้ได้ดีที่สุด?**
+
+ตัวเลือก:
+- A. ระดับความเสี่ยงที่ยอมรับได้ (Risk appetite)
+- B. เกณฑ์เบี่ยงเบนความเสี่ยงที่ยอมรับได้ (Risk tolerance)
+- C. ความเสี่ยงที่หลงเหลืออยู่ (Residual risk)
+- D. ความสามารถในการรองรับความเสี่ยง (Risk capacity)
+
+**เฉลย: A. ระดับความเสี่ยงที่ยอมรับได้ (Risk appetite)**
+
+---
+
+### ข้อ 36
+**(Cybersecurity) นโยบายความปลอดภัยของบริษัทระบุว่าพนักงานทุกคนต้องใช้รหัสผ่านที่คาดเดายาก เอกสารใดที่จะให้คำแนะนำโดยละเอียดแบบทีละขั้นตอนเกี่ยวกับวิธีการสร้างและจัดการรหัสผ่านเหล่านี้?**
+
+ตัวเลือก:
+- A. แนวปฏิบัติเกี่ยวกับรหัสผ่าน (Password Guideline)
+- B. นโยบายความปลอดภัย (Security Policy)
+- C. มาตรฐานรหัสผ่าน (Password Standard)
+- D. นโยบายการใช้งานที่ยอมรับได้ (Acceptable Use Policy)
+
+**เฉลย: C. มาตรฐานรหัสผ่าน (Password Standard)**
+
+> ข้อนี้เป็นคำถามซ้ำกับข้อ 26 แต่สลับลำดับตัวเลือก
+
+---
+
+### ข้อ 37
+**(Cybersecurity) ผู้จัดการฝ่ายความปลอดภัยกำลังทบทวนมาตรการควบคุมความปลอดภัยทางกายภาพสำหรับศูนย์ข้อมูล (Data Center) มาตรการควบคุมใดต่อไปนี้ถือเป็นมาตรการควบคุมประเภทการตรวจจับ (Detective control)?**
+
+ตัวเลือก:
+- A. รั้ว (A fence)
+- B. ประตูกั้นหมุน (A turnstile)
+- C. ระบบกล้องวงจรปิด (A CCTV system)
+- D. ประตูที่ล็อกไว้ (A locked door)
+
+**เฉลย: C. ระบบกล้องวงจรปิด (A CCTV system)**
+
+---
+
+### ข้อ 38
+**(Cybersecurity) ผู้จัดการฝ่ายความปลอดภัยกำลังทบทวนมาตรการควบคุมความปลอดภัยทางกายภาพสำหรับศูนย์ข้อมูล (Data Center) มาตรการควบคุมใดต่อไปนี้ถือเป็นมาตรการควบคุมประเภทการตรวจจับ (Detective control)?**
+
+ตัวเลือก:
+- A. รั้ว (A fence)
+- B. ประตูกั้นหมุน (A turnstile)
+- C. ระบบกล้องวงจรปิด (A CCTV system)
+- D. ประตูที่ล็อกไว้ (A locked door)
+
+**เฉลย: C. ระบบกล้องวงจรปิด (A CCTV system)**
+
+> ข้อนี้เป็นคำถามซ้ำกับข้อ 37
+
+---
+
+## หมวด พ.ร.บ.คอมพิวเตอร์
+
+### ข้อ 39
+**(พรบ.คอมพ์) จากข่าว พลเมืองต่อต้าน Single Gatewayฯ ได้โพสต์ภาพที่ได้จากการบันทึกหน้าเว็บ 3 ภาพ พร้อมอ้างว่าสามารถแยกระบบของกองทัพภาคที่ 2 (ทภ.2) ได้เป็นที่เรียบร้อย อีกทั้งอ้างตัวอย่างงบประมาณหลักของทหารหน่วยคือการขุดลอกแหล่งน้ำปี 2559 ซึ่งมีการตั้งงบไว้ราว 184 ล้านบาท จากทั้งหมด 224 ล้านบาท จากข่าว พลเมืองคนดังกล่าว ทำผิด พรบ.คอมพ์ มาตราใดบ้าง**
+
+ตัวเลือก:
+- A. มาตราที่ 12
+- B. มาตราที่ 5,7,12
+- C. มาตราที่ 14
+- D. มาตราที่ 5,7
+
+**เฉลย: B. มาตราที่ 5,7,12**
+
+---
+
+### ข้อ 40
+**(พรบ.คอมพ์) การเปิดเผยมาตรการป้องกันการเข้าถึงระบบคอมพิวเตอร์ เข้าข่ายผิดมาตราใด**
+
+ตัวเลือก:
+- A. มาตรา 12
+- B. มาตรา 7
+- C. มาตรา 6
+- D. มาตรา 8
+- E. มาตรา 9
+
+**เฉลย: C. มาตรา 6**
+
+---
+
+### ข้อ 41
+**(พรบ.คอมพ์) ศาลฎีกาพิพากษายืน ผอ.ประชาไท ผิด พ.ร.บ.คอมพิวเตอร์ กรณีปิดความคิดเห็นในเว็บบอร์ดช้าจากข่าว : ผอ.ประชาไท ทำผิด พรบ.คอมพ์ มาตราใดบ้าง**
+
+ตัวเลือก:
+- A. มาตราที่ 15
+- B. มาตราที่ 14
+- C. มาตราที่ 12,14
+- D. มาตราที่ 12
+
+**เฉลย: A. มาตราที่ 15**
+
+---
+
+### ข้อ 42
+**(พรบ.คอมพ์) การป้อนโปรแกรมที่มีไวรัสทำลายข้อมูลหรือโปรแกรมคอมพิวเตอร์ เข้าข่ายผิดมาตราใด**
+
+ตัวเลือก:
+- A. มาตรา 10
+- B. มาตรา 5
+- C. มาตรา 7
+- D. มาตรา 9
+
+**เฉลย: D. มาตรา 9**
+
+---
+
+### ข้อ 43
+**(พรบ.คอมพ์) ข้อใดคือข้อมูลเกี่ยวกับการติดต่อสื่อสารของระบบคอมพิวเตอร์**
+
+ตัวเลือก:
+- A. “ข้อมูลคอมพิวเตอร์”
+- B. “ข้อมูลจราจรทางคอมพิวเตอร์”
+- C. “ข้อมูลอิเล็กทรอนิกส์”
+- D. “ระบบคอมพิวเตอร์”
+
+**เฉลย: B. “ข้อมูลจราจรทางคอมพิวเตอร์”**
+
+---
+
+### ข้อ 44
+**(พรบ.คอมพ์) ถ้าคุณไป hack รหัสผ่านของระบบ www.src.ku.ac.th แล้วนำรหัสผ่านเหล่านั้นมาโพสต์เพื่อโชว์ความเก่งกาจของคุณ จะถือว่ามีความผิดในมาตราใดบ้าง**
+
+ตัวเลือก:
+- A. มาตราที่ 5,7
+- B. มาตราที่ 7
+- C. มาตราที่ 6
+- D. มาตราที่ 5,6,7
+
+**เฉลย: D. มาตราที่ 5,6,7**
+
+---
+
+### ข้อ 45
+**(พรบ.คอมพ์) การที่รัฐจะเข้าไปสอดแนมหรือล้วงข้อมูลการติดต่อสื่อสารของประชาชน ถือว่าผิดมาตราใด**
+
+ตัวเลือก:
+- A. มาตรา 8
+- B. ไม่ผิด สามารถทำได้ เพราะเป็นรัฐบาล
+- C. มาตรา 5
+- D. มาตรา 7
+
+**เฉลย: A. มาตรา 8**
+
+---
+
+### ข้อ 46
+**(พรบ.คอมพ์) ถ้าคุณไป view source ของเพจ www.google.com ถือเป็นการกระทำความผิดข้อใด**
+
+ตัวเลือก:
+- A. มาตรา 6
+- B. ไม่ผิด เพราะถือเป็นการเข้าถึงข้อมูลที่ไม่มีมาตรการป้องกันเฉพาะ
+- C. มาตรา 5
+- D. มาตรา 7
+
+**เฉลย: B. ไม่ผิด เพราะถือเป็นการเข้าถึงข้อมูลที่ไม่มีมาตรการป้องกันเฉพาะ**
+
+---
+
+### ข้อ 47
+**(พรบ.คอมพ์) การใช้ email ที่เป็นนามแฝงเพื่อส่งข้อความให้คนทั้งมหาวิทยาลัย ถือว่าผิดตามมาตราใด**
+
+ตัวเลือก:
+- A. มาตราที่ 14
+- B. จากข้อมูลเพียงเท่านี้ ไม่ถือว่าผิดมาตราใด ๆ
+- C. มาตราที่ 13
+- D. มาตราที่ 11
+
+**เฉลย: B. จากข้อมูลเพียงเท่านี้ ไม่ถือว่าผิดมาตราใด ๆ**
+
+---
+
+### ข้อ 48
+**(พรบ.คอมพ์) จากข่าว ASIASOFT ร่วมมือ ปอท. จับโปรแกรมช่วยเล่นเกม จากข่าว : ผู้ใช้บอทเล่นเกมส์ ผิดมาตราใด**
+
+ตัวเลือก:
+- A. มาตราที่ 5,7
+- B. มาตราที่ 13
+- C. มาตราที่ 9
+- D. มาตราที่ 8
+
+**เฉลย: C. มาตรา 9**
+
+---
+
+### ข้อ 49
+**(พรบ.คอมพ์) ถ้าคุณเป็น system admin ของระบบลงทะเบียน “ซิม ช็อป ใช้” แล้วไปปิดระบบเพื่อทำการ maintenance ทำให้ประชาชนไม่สามารถเข้าถึงได้ ถือว่ากระทำความผิดมาตราใด**
+
+ตัวเลือก:
+- A. ไม่ผิด เพราะถือเป็นการปฏิบัติงานในหน้าที่
+- B. มาตราที่ 10
+- C. มาตราที่ 9
+- D. มาตราที่ 8
+
+**เฉลย: A. ไม่ผิด เพราะถือเป็นการปฏิบัติงานในหน้าที่**
+
+  </script>
+
+  <!-- ========================================== -->
+  <!-- GAME CONTROLLER JAVASCRIPT                 -->
+  <!-- ========================================== -->
+  <script>
+    // Game State
+    const state = {
+      questions: [],
+      currentIndex: 0,
+      score: 0,
+      combo: 0,
+      maxCombo: 0,
+      soundMuted: false,
+      userAnswers: [],
+      currentLevel: 1, // 1 to 4
+      hackMode: true
+    };
+
+    // Level settings and descriptions
+    const levels = {
+      1: {
+        name: "LEVEL 1",
+        title: "ขาวใส ปลอดภัยไร้มลทิน",
+        policeStatus: "👮 ตำรวจเดินผ่านชิว ๆ ไม่ชายตามองด้วยซ้ำ (Wanted: 0 Stars)",
+        color: "retroCyan",
+        stars: 0
+      },
+      2: {
+        name: "LEVEL 2",
+        title: "เริ่มบ่มแดด เริ่มมีทรง",
+        policeStatus: "👮 ตำรวจเริ่มหยุดมองสะดุดตาแวบหนึ่ง สะกิดถามเพื่อน 'เห้ย ไอ้นี่คนตึงกฎหมายป่ะวะ' (Wanted: 2 Stars)",
+        color: "retroYellow",
+        stars: 2
+      },
+      3: {
+        name: "LEVEL 3",
+        title: "เข้มเต็มข้อ ตำรวจเริ่มส่อง",
+        policeStatus: "👮 ตำรวจเอามือแตะซองปืนและกดวิทยุสื่อสารรายงานขอกำลังเสริมแล้ว! (Wanted: 4 Stars)",
+        color: "retroPink",
+        stars: 4
+      },
+      4: {
+        name: "LEVEL 4",
+        title: "ความมืดครอบงำ วายร้าย 5 ดาว!",
+        policeStatus: "🚨 5-STAR WANTED! ไซเรนกระพริบ รถตำรวจยกโขยงมาปิดล้อม ส่องไฟฉายจ้องเขม็ง! วิ่งสิเออ!",
+        color: "retroRed",
+        stars: 5
+      }
+    };
+
+    // ==========================================
+    // AUDIO ENGINE (Web Audio API)
+    // ==========================================
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function toggleMute() {
+      state.soundMuted = !state.soundMuted;
+      const btn = document.getElementById('mute-btn');
+      const icon = document.getElementById('mute-icon');
+      if (state.soundMuted) {
+        icon.textContent = "🔇";
+        btn.classList.add('opacity-50');
+      } else {
+        icon.textContent = "🔊";
+        btn.classList.remove('opacity-50');
+        // Test sound
+        playSound('click');
+      }
+    }
+
+    function playSound(type) {
+      if (state.soundMuted) return;
+      try {
+        initAudio();
+        if (!audioCtx) return;
+
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+
+        const now = audioCtx.currentTime;
+
+        if (type === 'correct') {
+          // Retro Arpeggio (Rising C5 -> E5 -> G5)
+          playTone(523.25, 0.08, 'triangle', now); // C5
+          playTone(659.25, 0.08, 'triangle', now + 0.08); // E5
+          playTone(783.99, 0.16, 'triangle', now + 0.16); // G5
+        } 
+        else if (type === 'incorrect') {
+          // Retro buzz / descend slide
+          playToneSlide(180, 110, 0.35, 'sawtooth', now);
+        } 
+        else if (type === 'levelUp') {
+          // Retro triumph fanfare
+          playTone(523.25, 0.07, 'square', now);
+          playTone(659.25, 0.07, 'square', now + 0.07);
+          playTone(783.99, 0.07, 'square', now + 0.14);
+          playTone(1046.50, 0.25, 'square', now + 0.21);
+        } 
+        else if (type === 'click') {
+          // Retro short tick
+          playTone(900, 0.03, 'sine', now);
+        } 
+        else if (type === 'start') {
+          // Coin insert sound (E6 -> B6)
+          playTone(1318.51, 0.06, 'square', now);
+          playTone(1975.53, 0.22, 'square', now + 0.06);
+        }
+      } catch (err) {
+        console.warn("AudioContext failed or blocked by policy:", err);
+      }
+    }
+
+    function playTone(freq, duration, type, startTime) {
+      const osc = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, startTime);
+      
+      gainNode.gain.setValueAtTime(0.08, startTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+      
+      osc.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      osc.start(startTime);
+      osc.stop(startTime + duration);
+    }
+
+    function playToneSlide(startFreq, endFreq, duration, type, startTime) {
+      const osc = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      osc.type = type;
+      osc.frequency.setValueAtTime(startFreq, startTime);
+      osc.frequency.linearRampToValueAtTime(endFreq, startTime + duration);
+      
+      gainNode.gain.setValueAtTime(0.12, startTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+      
+      osc.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      osc.start(startTime);
+      osc.stop(startTime + duration);
+    }
+
+    // ==========================================
+    // MARKDOWN PARSER
+    // ==========================================
+    function parseQuizMarkdown() {
+      const mdElement = document.getElementById('quiz-markdown');
+      if (!mdElement) {
+        console.error("Markdown template element not found!");
+        return [];
+      }
+      
+      let mdText = mdElement.textContent;
+      
+      // Cut off the cheat sheet to avoid parsing it as extra questions
+      const cheatSheetIdx = mdText.indexOf('# Cheat Sheet');
+      if (cheatSheetIdx !== -1) {
+        mdText = mdText.substring(0, cheatSheetIdx);
+      }
+
+      // Split questions using "### ข้อ "
+      const rawBlocks = mdText.split(/### ข้อ\s+/);
+      const parsed = [];
+
+      for (let i = 1; i < rawBlocks.length; i++) {
+        const block = rawBlocks[i];
+        const lines = block.split('\n').map(line => line.trim());
+        if (lines.length === 0) continue;
+
+        const headerLine = lines[0];
+        const questionNum = parseInt(headerLine) || i;
+
+        let questionText = "";
+        let options = [];
+        let correctAnswer = "";
+        let explanation = "";
+        
+        let parsingOptions = false;
+        let parsingExplanation = false;
+
+        for (let j = 1; j < lines.length; j++) {
+          const line = lines[j];
+          if (!line) continue;
+
+          // Detect answer section
+          if (line.includes('**เฉลย:') || line.includes('เฉลย:')) {
+            parsingOptions = false;
+            parsingExplanation = true;
+            
+            // Clean the bold markup
+            const cleanLine = line.replace(/\*\*/g, '').replace(/เฉลย:/g, '').trim();
+            // Find A, B, C, D, or E
+            const ansMatch = cleanLine.match(/([A-E])/);
+            if (ansMatch) {
+              correctAnswer = ansMatch[1];
+            }
+            
+            // If the answer line contains extra text after correct answer letter, count it as explanation
+            if (ansMatch) {
+              const charIndex = cleanLine.indexOf(ansMatch[1]);
+              if (charIndex !== -1 && cleanLine.substring(charIndex + 1).trim().length > 1) {
+                explanation += cleanLine.substring(charIndex + 1).replace(/^[\s\.\,\-\:]+/, '').trim() + " ";
+              }
+            }
+            continue;
+          }
+
+          // Detect start of options
+          if (line.startsWith('ตัวเลือก:')) {
+            parsingOptions = true;
+            continue;
+          }
+
+          // Parse options line (e.g., "- A. Unilateral NDA")
+          if (parsingOptions && line.startsWith('-')) {
+            const optMatch = line.match(/^-\s*([A-E])\.\s*(.*)/) || line.match(/^-\s*([A-E])\s*(.*)/);
+            if (optMatch) {
+              options.push({
+                key: optMatch[1],
+                text: optMatch[2].trim()
+              });
+            }
+            continue;
+          }
+
+          // Parse extra explanation/notes
+          if (parsingExplanation) {
+            explanation += line.replace(/^>\s*/, '').trim() + " ";
+            continue;
+          }
+
+          // Otherwise, it is part of the question description
+          if (!parsingOptions && !parsingExplanation && !line.startsWith('---')) {
+            const cleanQLine = line.replace(/\*\*/g, '').trim();
+            if (cleanQLine) {
+              if (questionText) questionText += "\n";
+              questionText += cleanQLine;
+            }
+          }
+        }
+
+        if (questionText && options.length > 0) {
+          parsed.push({
+            number: questionNum,
+            question: questionText,
+            options: options,
+            answer: correctAnswer,
+            explanation: explanation.trim() || `คำตอบที่ถูกต้องคือข้อ ${correctAnswer} ตามข้ออ้างอิงและภาพเฉลยของคณะกรรมการ`
+          });
+        }
+      }
+      return parsed;
+    }
+
+    // ==========================================
+    // RENDER DYNAMIC SVG AVATAR
+    // ==========================================
+    function getAvatarSVG(level) {
+      let faceColor = "#ffebd9"; // Level 1
+      let bgColor = "url(#bg-gradient-1)";
+      let eyesSVG = "";
+      let extrasSVG = "";
+      let beardHair = "#2c2443";
+      
+      if (level === 2) {
+        faceColor = "#c88a5c"; // Sun-tanned
+        bgColor = "url(#bg-gradient-2)";
+      } else if (level === 3) {
+        faceColor = "#663e26"; // Dark brown
+        bgColor = "url(#bg-gradient-3)";
+      } else if (level === 4) {
+        faceColor = "#110b14"; // Vantablack
+        bgColor = "url(#bg-gradient-4)";
+      }
+
+      // Glasses/Eyes and animations by level
+      if (level === 1) {
+        // Round geek glasses
+        eyesSVG = `
+          <!-- Nerd round glasses -->
+          <circle cx="65" cy="75" r="18" fill="none" stroke="#2c2443" stroke-width="4"/>
+          <circle cx="115" cy="75" r="18" fill="none" stroke="#2c2443" stroke-width="4"/>
+          <line x1="83" y1="75" x2="97" y2="75" stroke="#2c2443" stroke-width="4"/>
+          <!-- Pupil glint -->
+          <circle cx="65" cy="75" r="6" fill="#2c2443"/>
+          <circle cx="115" cy="75" r="6" fill="#2c2443"/>
+          <circle cx="68" cy="72" r="2" fill="white"/>
+          <circle cx="118" cy="72" r="2" fill="white"/>
+        `;
+      } 
+      else if (level === 2) {
+        // Retro Deal With It / Thug shades
+        eyesSVG = `
+          <!-- Pixel Thug shades -->
+          <polygon points="45,68 135,68 130,84 100,84 95,74 85,74 80,84 50,84" fill="#000000"/>
+          <rect x="55" y="72" width="6" height="4" fill="white" opacity="0.8"/>
+          <rect x="110" y="72" width="6" height="4" fill="white" opacity="0.8"/>
+        `;
+      } 
+      else if (level === 3) {
+        // Nervous looking eyes with sweat animation
+        eyesSVG = `
+          <!-- Wide nervous eyes -->
+          <ellipse cx="65" cy="75" rx="14" ry="12" fill="white" stroke="#2c2443" stroke-width="3"/>
+          <ellipse cx="115" cy="75" rx="14" ry="12" fill="white" stroke="#2c2443" stroke-width="3"/>
+          <!-- Pupils moving left and right -->
+          <g>
+            <circle cx="65" cy="75" r="6" fill="#2c2443">
+              <animate attributeName="cx" values="60;70;60" dur="4s" repeatCount="indefinite" />
+            </circle>
+            <circle cx="115" cy="75" r="6" fill="#2c2443">
+              <animate attributeName="cx" values="110;120;110" dur="4s" repeatCount="indefinite" />
+            </circle>
+          </g>
+          <!-- Nervous brow -->
+          <path d="M 50 60 Q 65 64 80 58" fill="none" stroke="#2c2443" stroke-width="3"/>
+          <path d="M 100 58 Q 115 64 130 60" fill="none" stroke="#2c2443" stroke-width="3"/>
+        `;
+        
+        // Sweat droplets slide down face
+        extrasSVG = `
+          <!-- Animated sweat drops -->
+          <circle cx="62" cy="95" r="3.5" fill="#00ffff" class="animate-sweat-1"/>
+          <circle cx="120" cy="100" r="3" fill="#00ffff" class="animate-sweat-2"/>
+        `;
+      } 
+      else if (level === 4) {
+        // Red glowing shades + heavy sweat + searchlights
+        eyesSVG = `
+          <!-- Angry futuristic glowing red visor/glasses -->
+          <polygon points="40,68 140,68 132,86 102,86 96,78 84,78 78,86 48,86" fill="#1f1124" stroke="#ff007f" stroke-width="2"/>
+          <polygon points="45,72 135,72 129,82 101,82 95,76 85,76 79,82 51,82" fill="#ff0055">
+            <animate attributeName="opacity" values="0.7;1;0.7" dur="1s" repeatCount="indefinite"/>
+          </polygon>
+          <rect x="52" y="74" width="20" height="2" fill="#ffffff" opacity="0.6"/>
+          <rect x="108" y="74" width="20" height="2" fill="#ffffff" opacity="0.6"/>
+        `;
+
+        // Heavy sweat drops sliding + police searchlight beams
+        extrasSVG = `
+          <!-- Heavy sweat -->
+          <circle cx="55" cy="90" r="3.5" fill="#00ffff" class="animate-sweat-1"/>
+          <circle cx="125" cy="95" r="3.5" fill="#00ffff" class="animate-sweat-2"/>
+          <circle cx="90" cy="110" r="3" fill="#00ffff" class="animate-sweat-1"/>
+          
+          <!-- Moving police searchlight beams -->
+          <polygon points="0,0 70,80 110,80" fill="rgba(255,234,0,0.2)">
+            <animate attributeName="points" 
+              values="0,0 70,80 110,80; 0,0 120,60 160,80; 0,0 70,80 110,80" 
+              dur="3s" repeatCount="indefinite"/>
+          </polygon>
+          <polygon points="180,0 90,90 120,110" fill="rgba(255,234,0,0.15)">
+            <animate attributeName="points" 
+              values="180,0 90,90 120,110; 180,0 30,120 70,140; 180,0 90,90 120,110" 
+              dur="4.2s" repeatCount="indefinite"/>
+          </polygon>
+        `;
+      }
+
+      // Base hair structure
+      const hairSVG = `
+        <!-- Spiky retro hair -->
+        <path d="M 32 60 L 40 32 L 55 42 L 70 25 L 90 38 L 110 25 L 125 42 L 140 32 L 148 60 Z" fill="${beardHair}"/>
+        <path d="M 40 40 L 50 20 L 65 30 L 80 15 L 95 32 L 115 18 L 130 35 Q 140 22 145 42" fill="${beardHair}" opacity="0.8"/>
+      `;
+
+      // Mouth matching the mood
+      let mouthSVG = `<path d="M 80 115 Q 90 122 100 115" fill="none" stroke="#2c2443" stroke-width="4" stroke-linecap="round"/>`; // Level 1 Smile
+      if (level === 2) {
+        mouthSVG = `<line x1="82" y1="114" x2="98" y2="110" stroke="#2c2443" stroke-width="4" stroke-linecap="round"/>`; // Smirk
+      } else if (level === 3) {
+        mouthSVG = `<path d="M 80 116 Q 85 110 90 116 Q 95 122 100 116" fill="none" stroke="#2c2443" stroke-width="3" stroke-linecap="round"/>`; // Wavy nervous mouth
+      } else if (level === 4) {
+        mouthSVG = `<rect x="84" y="112" width="12" height="6" rx="2" fill="none" stroke="#ff0055" stroke-width="3" stroke-linecap="round">
+          <animate attributeName="height" values="2;6;2" dur="0.5s" repeatCount="indefinite"/>
+        </rect>`; // Shaking open mouth
+      }
+
+      // Combine into SVG
+      return `
+        <svg viewBox="0 0 180 180" class="w-full h-full select-none ${level === 4 ? 'animate-shake' : ''}">
+          <defs>
+            <!-- Background Gradients -->
+            <linearGradient id="bg-gradient-1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#00c6ff" />
+              <stop offset="100%" stop-color="#0072ff" />
+            </linearGradient>
+            <linearGradient id="bg-gradient-2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#f857a6" />
+              <stop offset="100%" stop-color="#ff5858" />
+            </linearGradient>
+            <linearGradient id="bg-gradient-3" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#4e54c8" />
+              <stop offset="100%" stop-color="#8f94fb" />
+            </linearGradient>
+            <linearGradient id="bg-gradient-4" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#14061d" />
+              <stop offset="50%" stop-color="#2c003e" />
+              <stop offset="100%" stop-color="#0f0010" />
+            </linearGradient>
+          </defs>
+
+          <!-- Card Background Grid -->
+          <rect x="0" y="0" width="180" height="180" fill="${bgColor}"/>
+          
+          <!-- Background Grid line details -->
+          <line x1="30" y1="0" x2="30" y2="180" stroke="white" opacity="0.08" stroke-width="1"/>
+          <line x1="60" y1="0" x2="60" y2="180" stroke="white" opacity="0.08" stroke-width="1"/>
+          <line x1="90" y1="0" x2="90" y2="180" stroke="white" opacity="0.08" stroke-width="1"/>
+          <line x1="120" y1="0" x2="120" y2="180" stroke="white" opacity="0.08" stroke-width="1"/>
+          <line x1="150" y1="0" x2="150" y2="180" stroke="white" opacity="0.08" stroke-width="1"/>
+          <line x1="0" y1="30" x2="180" y2="30" stroke="white" opacity="0.08" stroke-width="1"/>
+          <line x1="0" y1="60" x2="180" y2="60" stroke="white" opacity="0.08" stroke-width="1"/>
+          <line x1="0" y1="90" x2="180" y2="90" stroke="white" opacity="0.08" stroke-width="1"/>
+          <line x1="0" y1="120" x2="180" y2="120" stroke="white" opacity="0.08" stroke-width="1"/>
+          <line x1="0" y1="150" x2="180" y2="150" stroke="white" opacity="0.08" stroke-width="1"/>
+
+          <!-- Character Body Base -->
+          <path d="M 40 180 L 45 150 Q 45 135 70 135 L 110 135 Q 135 135 135 150 L 140 180 Z" fill="#2c2443" stroke="#2c2443" stroke-width="3"/>
+          <rect x="75" y="125" width="30" height="20" rx="5" fill="${faceColor}" stroke="#2c2443" stroke-width="3"/>
+
+          <!-- Character Head Base -->
+          <rect x="45" y="45" width="90" height="85" rx="20" ry="20" fill="${faceColor}" stroke="#2c2443" stroke-width="4"/>
+
+          <!-- Ears -->
+          <circle cx="43" cy="85" r="9" fill="${faceColor}" stroke="#2c2443" stroke-width="3"/>
+          <circle cx="137" cy="85" r="9" fill="${faceColor}" stroke="#2c2443" stroke-width="3"/>
+
+          <!-- Nose -->
+          <path d="M 88 88 Q 90 94 92 88" fill="none" stroke="#2c2443" stroke-width="3" stroke-linecap="round"/>
+
+          <!-- Hair -->
+          ${hairSVG}
+
+          <!-- Eyes Layer -->
+          ${eyesSVG}
+
+          <!-- Mouth Layer -->
+          ${mouthSVG}
+
+          <!-- Extras Layer (Sweat, searchlights, filters) -->
+          ${extrasSVG}
+          
+          <!-- Outer border -->
+          <rect x="0" y="0" width="180" height="180" fill="none" stroke="#2c2443" stroke-width="6"/>
+        </svg>
+      `;
+    }
+
+    // ==========================================
+    // GAME CORE FLOW & MECHANICS
+    // ==========================================
+    
+    // Window onload / Loading
+    window.onload = function() {
+      // Simulate retro loading bar
+      const loading = document.getElementById('load-progress');
+      let w = 0;
+      const interval = setInterval(() => {
+        w += 8;
+        if (w >= 100) {
+          w = 100;
+          clearInterval(interval);
+          
+          // Complete parser
+          state.questions = parseQuizMarkdown();
+          document.getElementById('loading-screen').classList.add('hidden');
+          document.getElementById('welcome-screen').classList.remove('hidden');
+          
+          // Set Total Questions Count
+          document.getElementById('total-questions-text').innerText = state.questions.length;
+        }
+        loading.style.width = w + '%';
+      }, 50);
+    };
+
+    function startGame() {
+      playSound('start');
+      document.getElementById('welcome-screen').classList.add('hidden');
+      document.getElementById('game-screen').classList.remove('hidden');
+      
+      // Initialize states
+      state.currentIndex = 0;
+      state.score = 0;
+      state.combo = 0;
+      state.maxCombo = 0;
+      state.userAnswers = Array(state.questions.length).fill(null);
+      state.currentLevel = 1;
+      
+      // Setup column widths and hidden statuses based on mode
+      applyHackModeLayout();
+
+      renderQuestion();
+      if (state.hackMode) {
+        updateAvatarCard();
+      }
+    }
+
+    function renderQuestion() {
+      const q = state.questions[state.currentIndex];
+      if (!q) return;
+
+      // Reset UI elements
+      document.getElementById('q-number').innerText = `${state.currentIndex + 1} / ${state.questions.length}`;
+      document.getElementById('q-content').innerHTML = `
+        <div class="text-xs font-pressStart mb-2 text-retroPink opacity-80">[${getCategory(q.question)}]</div>
+        <div>${escapeHTML(q.question)}</div>
+      `;
+      
+      const optionsContainer = document.getElementById('options-container');
+      optionsContainer.innerHTML = '';
+      
+      // Hide Explanation & Next button
+      document.getElementById('explanation-container').classList.add('hidden');
+      document.getElementById('next-btn').classList.add('hidden');
+
+      // Generate Option Buttons
+      q.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.id = `opt-${opt.key}`;
+        btn.className = "w-full text-left p-4 bg-retroCard border-2 border-retroBorder text-sm md:text-base font-chakra hover:border-retroBorderActive hover:bg-black/20 hover:-translate-y-0.5 active:translate-y-0 transition duration-150 rounded shadow-retro flex items-center justify-between cursor-pointer group arcade-btn";
+        btn.innerHTML = `
+          <span class="flex items-center">
+            <span class="font-pressStart text-xs text-retroCyan group-hover:text-retroPink border border-retroBorder px-2.5 py-1.5 bg-black/50 mr-4 rounded">${opt.key}</span>
+            <span>${escapeHTML(opt.text)}</span>
+          </span>
+          <span class="opt-status font-pressStart text-xs hidden"></span>
+        `;
+        btn.onclick = () => selectAnswer(opt.key);
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    function getCategory(text) {
+      if (text.includes('NDA')) return 'NDA';
+      if (text.includes('ธุรกรรม')) return 'พ.ร.บ.ธุรกรรม';
+      if (text.includes('จริยธรรม')) return 'จริยธรรมคอมฯ';
+      if (text.includes('Cybersecurity') || text.includes('Security') || text.includes('risk')) return 'Cybersecurity';
+      if (text.includes('คอมพ์') || text.includes('คอมพิวเตอร์')) return 'พ.ร.บ.คอมพิวเตอร์';
+      return 'Digital Law';
+    }
+
+    function selectAnswer(selectedKey) {
+      const q = state.questions[state.currentIndex];
+      if (state.userAnswers[state.currentIndex] !== null) return; // Answered already
+
+      state.userAnswers[state.currentIndex] = selectedKey;
+      const isCorrect = (selectedKey === q.answer);
+
+      // Disable all option buttons
+      q.options.forEach(opt => {
+        const btn = document.getElementById(`opt-${opt.key}`);
+        btn.onclick = null; // Remove handler
+        btn.classList.remove('hover:border-retroBorderActive', 'hover:bg-black/20');
+        
+        // Highlight correct green, and user's wrong red
+        if (opt.key === q.answer) {
+          btn.classList.add('border-retroGreen', 'bg-retroGreen/10', 'text-retroGreen');
+          btn.querySelector('.opt-status').innerHTML = "✔️ CORRECT";
+          btn.querySelector('.opt-status').classList.remove('hidden');
+          btn.querySelector('.opt-status').classList.add('text-retroGreen');
+        } else if (opt.key === selectedKey) {
+          btn.classList.add('border-retroRed', 'bg-retroRed/10', 'text-retroRed');
+          btn.querySelector('.opt-status').innerHTML = "❌ WRONG";
+          btn.querySelector('.opt-status').classList.remove('hidden');
+          btn.querySelector('.opt-status').classList.add('text-retroRed');
+        } else {
+          btn.classList.add('opacity-40');
+        }
+      });
+
+      // Update state numbers
+      if (isCorrect) {
+        state.score++;
+        state.combo++;
+        if (state.combo > state.maxCombo) {
+          state.maxCombo = state.combo;
+        }
+        playSound('correct');
+      } else {
+        state.combo = 0;
+        playSound('incorrect');
+      }
+
+      // Update Score text and Combo UI
+      document.getElementById('score-text').innerText = state.score;
+      const comboStreak = document.getElementById('combo-streak');
+      comboStreak.innerText = `x${state.combo}`;
+      if (state.combo > 2) {
+        comboStreak.classList.add('text-retroPink', 'font-bold');
+        comboStreak.classList.remove('text-gray-400');
+      } else {
+        comboStreak.classList.remove('text-retroPink', 'font-bold');
+      }
+
+      // Trigger Avatar Progression Check & Updates
+      checkLevelProgression();
+
+      // Show Explanation Box
+      const explanationTitle = document.getElementById('explanation-title');
+      const explanationText = document.getElementById('explanation-text');
+      const explanationBox = document.getElementById('explanation-container');
+
+      explanationTitle.innerText = `ข้อ ${q.number} ตอบ ${q.answer}`;
+      explanationText.innerText = q.explanation;
+      explanationBox.classList.remove('hidden');
+
+      // Show Next Button
+      const nextBtn = document.getElementById('next-btn');
+      if (state.currentIndex === state.questions.length - 1) {
+        nextBtn.innerText = "FINISH GAME 🏁";
+      } else {
+        nextBtn.innerText = "NEXT QUESTION >";
+      }
+      nextBtn.classList.remove('hidden');
+    }
+
+    function checkLevelProgression() {
+      // Calculate level based on correct answers so far
+      // LV1: 0-12, LV2: 13-24, LV3: 25-36, LV4: 37+
+      const score = state.score;
+      let newLevel = 1;
+      
+      if (score >= 37) {
+        newLevel = 4;
+      } else if (score >= 25) {
+        newLevel = 3;
+      } else if (score >= 13) {
+        newLevel = 2;
+      } else {
+        newLevel = 1;
+      }
+
+      // Level transition triggers fanfare
+      if (newLevel > state.currentLevel) {
+        state.currentLevel = newLevel;
+        if (state.hackMode) {
+          playSound('levelUp');
+          flashWarningEffect();
+          
+          // Show center cartoon warning modal when transitioning to Level 3 or 4
+          if (newLevel === 3 || newLevel === 4) {
+            showPoliceAlertModal(newLevel);
+          }
+        }
+      } else {
+        state.currentLevel = newLevel;
+      }
+
+      if (state.hackMode) {
+        updateAvatarCard();
+      }
+    }
+
+    function flashWarningEffect() {
+      const red = document.getElementById('siren-overlay-red');
+      const blue = document.getElementById('siren-overlay-blue');
+      if (state.currentLevel === 4) {
+        // Continuous flashing at Level 4
+        red.style.opacity = "0.4";
+        blue.style.opacity = "0.4";
+        red.classList.add('animate-siren-red');
+        blue.classList.add('animate-siren-blue');
+      } else {
+        // Just flash once
+        red.style.opacity = "0.5";
+        setTimeout(() => { red.style.opacity = "0"; }, 200);
+      }
+    }
+
+    function updateAvatarCard() {
+      const lvl = levels[state.currentLevel];
+      
+      // Update Texts
+      document.getElementById('avatar-level-name').innerText = lvl.name + `: ${getWantedTier(state.currentLevel)}`;
+      document.getElementById('avatar-level-name').className = `font-pressStart text-xs text-${lvl.color}`;
+      document.getElementById('avatar-level-title').innerText = `"${lvl.title}"`;
+      document.getElementById('avatar-police-status').innerText = lvl.policeStatus;
+
+      // Update Star rating (Wanted level stars)
+      const wantedStars = document.getElementById('wanted-stars');
+      wantedStars.innerHTML = '';
+      for (let s = 1; s <= 5; s++) {
+        const star = document.createElement('span');
+        star.className = "text-xl font-pressStart";
+        if (s <= lvl.stars) {
+          star.innerText = "★";
+          star.className += ` text-${lvl.color} ${state.currentLevel === 4 ? 'animate-pulse' : ''}`;
+        } else {
+          star.innerText = "☆";
+          star.className += " text-gray-700";
+        }
+        wantedStars.appendChild(star);
+      }
+
+      // Render Dynamic SVG
+      const svgCode = getAvatarSVG(state.currentLevel);
+      document.getElementById('avatar-svg-container').innerHTML = svgCode;
+
+      // Sirens activation and full screen police peering overlay
+      const cardSirenRed = document.getElementById('avatar-siren-red');
+      const cardSirenBlue = document.getElementById('avatar-siren-blue');
+      const card = document.getElementById('avatar-card');
+      const peeringOverlay = document.getElementById('police-peering-overlay');
+      const peeringPolice1 = document.getElementById('peering-police-1');
+      const peeringPolice2 = document.getElementById('peering-police-2');
+      const vignetteFrame = document.getElementById('vignette-frame');
+
+      if (state.currentLevel === 4) {
+        cardSirenRed.style.opacity = "0.5";
+        cardSirenBlue.style.opacity = "0.5";
+        card.classList.add('border-retroRed');
+        card.classList.remove('border-retroBorder');
+        
+        // Activate full screen flashing wanted levels
+        document.getElementById('siren-overlay-red').style.opacity = "0.3";
+        document.getElementById('siren-overlay-blue').style.opacity = "0.3";
+        document.getElementById('siren-overlay-red').classList.add('animate-siren-red');
+        document.getElementById('siren-overlay-blue').classList.add('animate-siren-blue');
+
+        // Full screen police peering overlay (Active Level 4 - Full)
+        peeringOverlay.style.opacity = "1";
+        peeringPolice1.style.transform = "translate(0, 0)";
+        peeringPolice2.style.transform = "translate(0, 0)";
+        vignetteFrame.className = "absolute inset-0 border-[16px] md:border-[32px] border-retroRed/30 animate-pulse";
+      } 
+      else if (state.currentLevel === 3) {
+        cardSirenRed.style.opacity = "0";
+        cardSirenBlue.style.opacity = "0";
+        card.classList.remove('border-retroRed');
+        card.classList.add('border-retroBorder');
+        
+        // Disable screen siren flash
+        document.getElementById('siren-overlay-red').style.opacity = "0";
+        document.getElementById('siren-overlay-blue').style.opacity = "0";
+        document.getElementById('siren-overlay-red').classList.remove('animate-siren-red');
+        document.getElementById('siren-overlay-blue').classList.remove('animate-siren-blue');
+
+        // Full screen police peering overlay (Active Level 3 - Subtle)
+        peeringOverlay.style.opacity = "0.45";
+        peeringPolice1.style.transform = "translate(-15px, -15px)";
+        peeringPolice2.style.transform = "translate(15px, 15px)";
+        vignetteFrame.className = "absolute inset-0 border-[10px] md:border-[20px] border-retroYellow/20";
+      }
+      else {
+        cardSirenRed.style.opacity = "0";
+        cardSirenBlue.style.opacity = "0";
+        card.classList.remove('border-retroRed');
+        card.classList.add('border-retroBorder');
+        
+        // Disable screen siren flash
+        document.getElementById('siren-overlay-red').style.opacity = "0";
+        document.getElementById('siren-overlay-blue').style.opacity = "0";
+        document.getElementById('siren-overlay-red').classList.remove('animate-siren-red');
+        document.getElementById('siren-overlay-blue').classList.remove('animate-siren-blue');
+
+        // Full screen police peering overlay (Inactive for Level 1 & 2)
+        peeringOverlay.style.opacity = "0";
+        peeringPolice1.style.transform = "translate(-100px, -100px)";
+        peeringPolice2.style.transform = "translate(100px, 100px)";
+        vignetteFrame.className = "absolute inset-0 border-[0px] border-transparent";
+      }
+
+      // Alert Banner Update
+      const alertBanner = document.getElementById('police-alert-banner');
+      if (state.currentLevel === 4) {
+        alertBanner.className = "bg-retroRed text-white border-b-4 border-white text-center py-2.5 px-4 font-pressStart text-[9px] md:text-xs z-40 sticky top-[76px] tracking-wider shadow-lg flex items-center justify-center space-x-2";
+        alertBanner.innerHTML = `<span class="animate-pulse">🚨 WANTED LEVEL 5 STARS: THE POLICE ARE CHASING YOU! / ตำรวจกำลังไล่ล่าคุณอยู่! 🚨</span>`;
+        alertBanner.classList.remove('hidden');
+      } 
+      else if (state.currentLevel === 3) {
+        alertBanner.className = "bg-retroYellow text-black border-b-4 border-white text-center py-2.5 px-4 font-pressStart text-[9px] md:text-xs z-40 sticky top-[76px] tracking-wider shadow-lg flex items-center justify-center space-x-2";
+        alertBanner.innerHTML = `<span class="animate-pulse">👮 WARNING: THE POLICE ARE WATCHING YOU! / ตำรวจกำลังเฝ้ามองคุณอยู่! 👮</span>`;
+        alertBanner.classList.remove('hidden');
+      } 
+      else {
+        alertBanner.classList.add('hidden');
+      }
+
+      // Update Aggro Bar Percentage
+      // Level 4 is 100% aggro.
+      const aggroPercentVal = Math.round((state.score / state.questions.length) * 100);
+      document.getElementById('aggro-percent').innerText = `${aggroPercentVal}%`;
+      document.getElementById('aggro-percent').className = `font-bold text-${lvl.color}`;
+      
+      const aggroBar = document.getElementById('aggro-bar');
+      aggroBar.style.width = `${aggroPercentVal}%`;
+      aggroBar.className = `h-full transition-all duration-300 bg-${lvl.color}`;
+    }
+
+    function getWantedTier(lvl) {
+      if (lvl === 1) return "0 STARS";
+      if (lvl === 2) return "2 STARS";
+      if (lvl === 3) return "4 STARS";
+      if (lvl === 4) return "WANTED 5 STARS";
+      return "";
+    }
+
+    function nextQuestion() {
+      playSound('click');
+      if (state.currentIndex === state.questions.length - 1) {
+        // End Game
+        endGame();
+      } else {
+        state.currentIndex++;
+        renderQuestion();
+      }
+    }
+
+    function endGame() {
+      document.getElementById('game-screen').classList.add('hidden');
+      document.getElementById('game-over-screen').classList.remove('hidden');
+
+      // Clear full screen sirens to avoid visual disturbance on summary
+      document.getElementById('siren-overlay-red').classList.remove('animate-siren-red');
+      document.getElementById('siren-overlay-blue').classList.remove('animate-siren-blue');
+      document.getElementById('siren-overlay-red').style.opacity = "0";
+      document.getElementById('siren-overlay-blue').style.opacity = "0";
+      
+      // Clear full screen police peering overlay
+      document.getElementById('police-peering-overlay').style.opacity = "0";
+      
+      // Clear alert banner
+      document.getElementById('police-alert-banner').classList.add('hidden');
+
+      // Set final stats
+      document.getElementById('final-score').innerText = `${state.score} / ${state.questions.length}`;
+      const pct = Math.round((state.score / state.questions.length) * 100);
+      document.getElementById('final-percent').innerText = `${pct}%`;
+      document.getElementById('final-combo').innerText = `${state.maxCombo}x`;
+
+      const finalAvatarContainer = document.getElementById('final-avatar-svg-container').parentElement;
+      const finalLevelBadge = document.getElementById('final-level-badge');
+      const finalStatusTitle = document.getElementById('final-status-title');
+      const finalStatusDesc = document.getElementById('final-status-desc');
+
+      if (state.hackMode) {
+        // Show wanted level styles
+        finalAvatarContainer.classList.remove('hidden');
+        finalLevelBadge.classList.remove('hidden');
+        
+        const lvl = levels[state.currentLevel];
+        finalLevelBadge.innerText = `${lvl.name}: ${getWantedTier(state.currentLevel)}`;
+        finalLevelBadge.className = `px-4 py-1.5 border-2 border-white font-pressStart text-xs shadow-retro bg-${lvl.color} text-black`;
+        finalStatusTitle.innerText = `ฉายา: ${lvl.title}`;
+        
+        let finalDesc = "";
+        if (state.currentLevel === 1) {
+          finalDesc = "ยินดีด้วย! คุณรอดพ้นสายตาตำรวจได้อย่างสมบูรณ์แบบ เพราะตอบคำถามผิดเพียบจนดูไม่เป็นภัยสังคม... แต่คุณอาจสอบตกวิชากฎหมายนะ!";
+        } else if (state.currentLevel === 2) {
+          finalDesc = "ถือว่ามีความรู้อยู่บ้าง ผิวเข้มบ่มแดดกำลังเซ็กซี่ แต่ตำรวจยังแค่หันมาสบตาเบา ๆ กลับบ้านไปอ่าน พ.ร.บ.คอมพิวเตอร์เพิ่มเติมซะ!";
+        } else if (state.currentLevel === 3) {
+          finalDesc = "ฝีมือกฎหมายเริ่มเด่นชัดจนสะดุดตา ตำรวจเริ่มวิทยุรายงานตัวคุณในบัญชีเฝ้าระวังความมั่นคงแล้ว อีกนิดเดียวก็จะกลายเป็นภัยความลับชาติแล้ว!";
+        } else if (state.currentLevel === 4) {
+          finalDesc = "สุดยอดความมืดมิด! คุณตอบคำถามกฎหมายดิจิทัลได้ถูกต้องเพียบจนตำรวจระแวงว่าจะเป็นแฮกเกอร์ไซเบอร์ระดับพระกาฬ รถตำรวจล้อมบ้านคุณแล้วเตรียมตัวเข้าตารางได้เลย!";
+        }
+        finalStatusDesc.innerText = finalDesc;
+
+        // Render Final SVG
+        document.getElementById('final-avatar-svg-container').innerHTML = getAvatarSVG(state.currentLevel);
+        playSound('levelUp');
+      } else {
+        // Normal Mode: Hide avatar display and show simple summary
+        finalAvatarContainer.classList.add('hidden');
+        finalLevelBadge.classList.add('hidden');
+        
+        finalStatusTitle.innerText = "สรุปผลการทดสอบข้อสอบกฎหมาย";
+        
+        let finalDesc = "";
+        if (pct >= 80) {
+          finalDesc = `ระดับคะแนน: ยอดเยี่ยม (เกรด A) • คุณมีความรู้ความเข้าใจใน พ.ร.บ.ธุรกรรม, NDA, Cybersecurity และ พ.ร.บ.คอมพิวเตอร์ ในระดับที่สูงมาก สามารถนำไปปฏิบัติใช้งานจริงได้อย่างปลอดภัยถูกต้องตามกฎหมาย!`;
+        } else if (pct >= 50) {
+          finalDesc = `ระดับคะแนน: ผ่านการทดสอบ (เกรด C) • คุณมีความรู้ทั่วไปเกี่ยวกับกฎหมายดิจิทัล ควรทบทวนความรู้กฎหมายเพิ่มเติมเพื่อความปลอดภัยในการดำเนินธุรกิจและใช้งานระบบเครือข่าย`;
+        } else {
+          finalDesc = `ระดับคะแนน: ควรปรับปรุง (เกรด F) • คะแนนคุณยังไม่ผ่านเกณฑ์ทฤษฎีพื้นฐาน ควรกลับไปทบทวนข้อสอบอย่างละเอียดเพื่อหลีกเลี่ยงข้อหาการละเมิดกฎหมายอิเล็กทรอนิกส์โดยไม่ตั้งใจ`;
+        }
+        finalStatusDesc.innerText = finalDesc;
+      }
+    }
+
+    function restartGame() {
+      playSound('start');
+      document.getElementById('game-over-screen').classList.add('hidden');
+      document.getElementById('game-screen').classList.remove('hidden');
+      
+      state.currentIndex = 0;
+      state.score = 0;
+      state.combo = 0;
+      state.maxCombo = 0;
+      state.userAnswers = Array(state.questions.length).fill(null);
+      state.currentLevel = 1;
+
+      // Update text
+      document.getElementById('score-text').innerText = 0;
+      document.getElementById('combo-streak').innerText = 'x0';
+
+      renderQuestion();
+      updateAvatarCard();
+    }
+
+    // Escape HTML helpers to prevent script injection in text
+    function escapeHTML(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // ==========================================
+    // CHEAT CODE SYSTEM (Konami Code: Up Up Down Down Left Right Left Right B A)
+    // ==========================================
+    const konamiCode = [
+      'ArrowUp', 'ArrowUp',
+      'ArrowDown', 'ArrowDown',
+      'ArrowLeft', 'ArrowRight',
+      'ArrowLeft', 'ArrowRight',
+      'b', 'a'
+    ];
+    let konamiIndex = 0;
+
+    window.addEventListener('keydown', (e) => {
+      const key = e.key;
+      const targetKey = konamiCode[konamiIndex];
+
+      if (key.toLowerCase() === targetKey.toLowerCase()) {
+        konamiIndex++;
+        if (konamiIndex === konamiCode.length) {
+          activateCheatCode();
+          konamiIndex = 0;
+        }
+      } else {
+        // Reset or restart sequence
+        if (key.toLowerCase() === konamiCode[0].toLowerCase()) {
+          konamiIndex = 1;
+        } else {
+          konamiIndex = 0;
+        }
+      }
+    });
+
+    function activateCheatCode() {
+      // If not in game, ignore
+      const gameScreen = document.getElementById('game-screen');
+      if (gameScreen.classList.contains('hidden')) {
+        showNotification("กรุณากดเริ่มเล่นเกมก่อนรันสูตร!");
+        return;
+      }
+
+      // Special sound
+      playSound('levelUp');
+
+      // Determine next score target to skip level
+      let targetScore = 0;
+      if (state.currentLevel === 1) {
+        targetScore = 13; // Threshold for Level 2
+      } else if (state.currentLevel === 2) {
+        targetScore = 25; // Threshold for Level 3
+      } else if (state.currentLevel === 3) {
+        targetScore = 37; // Threshold for Level 4
+      } else {
+        // End Game
+        state.score = state.questions.length;
+        state.currentIndex = state.questions.length - 1;
+        endGame();
+        showNotification("สูตรรันสำเร็จ: ข้ามไปยังหน้าจบเกม!");
+        return;
+      }
+
+      state.score = targetScore;
+      state.currentIndex = targetScore; // Skip to question corresponding to level index
+      
+      // Auto-fill answers for skipped questions to avoid null errors
+      for (let i = 0; i < targetScore; i++) {
+        if (state.userAnswers[i] === null) {
+          state.userAnswers[i] = state.questions[i].answer;
+        }
+      }
+
+      // Update UI elements
+      document.getElementById('score-text').innerText = state.score;
+      document.getElementById('combo-streak').innerText = 'x0';
+      state.combo = 0;
+
+      checkLevelProgression();
+      renderQuestion();
+      
+      showNotification(`สูตรรันสำเร็จ: ข้ามไปยัง LEVEL ${state.currentLevel} (ข้อที่ ${state.currentIndex + 1})!`);
+    }
+
+    function showNotification(text) {
+      const existing = document.getElementById('cheat-popup');
+      if (existing) existing.remove();
+
+      const alertDiv = document.createElement('div');
+      alertDiv.id = 'cheat-popup';
+      alertDiv.className = "fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-retroPink border-4 border-white px-6 py-3 font-pressStart text-[10px] text-white shadow-retro z-50 animate-bounce tracking-wider";
+      alertDiv.innerText = text;
+      document.body.appendChild(alertDiv);
+      
+      setTimeout(() => {
+        alertDiv.classList.add('transition-opacity', 'duration-500', 'opacity-0');
+        setTimeout(() => alertDiv.remove(), 500);
+      }, 3000);
+    }
+
+    // ==========================================
+    // POLICE WARNING MODAL SYSTEM
+    // ==========================================
+    function showPoliceAlertModal(level) {
+      const modal = document.getElementById('police-alert-modal');
+      const box = document.getElementById('modal-content-box');
+      const title = document.getElementById('modal-alert-title');
+      const text = document.getElementById('modal-alert-text');
+      const sirenBg = document.getElementById('modal-siren-bg');
+      
+      // Reset animations
+      box.classList.remove('animate-shake');
+
+      // Setup contents based on Level
+      if (level === 3) {
+        title.innerText = "👮 POLICE DETECTED 👮";
+        title.className = "font-pressStart text-xs md:text-sm text-retroYellow mb-4 animate-pulse";
+        box.className = "bg-retroCard border-4 border-retroYellow p-6 max-w-md w-full text-center shadow-retro relative overflow-hidden transform scale-95 transition-all duration-300";
+        text.innerHTML = `ตรวจพบการละเมิดดัชนีผิวขาว!<br>ผิวหนังคุณสร้างเมลานินสูงขึ้นจากการเรียนรู้ความรู้กฎหมายตึงเกินไป!<br><span class="text-retroYellow font-bold">"ตำรวจส่งสายสืบติดหนวดแอบส่องกล้องส่องคุณแล้ว!"</span>`;
+        sirenBg.className = "absolute inset-0 opacity-10 pointer-events-none bg-retroYellow/30";
+      } 
+      else if (level === 4) {
+        title.innerText = "🚨 WANTED 5 STARS 🚨";
+        title.className = "font-pressStart text-xs md:text-sm text-retroRed mb-4 animate-pulse";
+        box.className = "bg-retroCard border-4 border-retroRed p-6 max-w-md w-full text-center shadow-retroPink relative overflow-hidden transform scale-95 transition-all duration-300 animate-shake";
+        text.innerHTML = `ความรู้ด้าน พ.ร.บ.คอมฯ และ NDA ดำทมิฬเกินขีดจำกัด!<br><span class="text-retroRed font-bold">"คุณกลายเป็นวายร้ายสัญชาติความมั่นคง!"</span><br>ขบวนรถตู้หน่วยสวาทเปิดไซเรนไล่ล่าล้อมหอพักคุณแล้ว!`;
+        sirenBg.className = "absolute inset-0 opacity-20 pointer-events-none animate-siren-red";
+      }
+
+      // Display Modal and animate in
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        box.classList.remove('scale-95');
+        box.classList.add('scale-100');
+      }, 50);
+    }
+
+    function closeAlertModal() {
+      playSound('click');
+      const modal = document.getElementById('police-alert-modal');
+      const box = document.getElementById('modal-content-box');
+      
+      box.classList.remove('scale-100');
+      box.classList.add('scale-95');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 200);
+    }
+
+    // ==========================================
+    // HACKATHON / MEME MODE CONTROLS
+    // ==========================================
+    function toggleHackMode() {
+      state.hackMode = !state.hackMode;
+      const btn = document.getElementById('hack-mode-btn');
+      const icon = document.getElementById('hack-mode-icon');
+      const label = btn.querySelector('.font-chakra');
+      
+      if (state.hackMode) {
+        icon.textContent = "🚨";
+        label.textContent = "โหมดเกรียน (ON)";
+        btn.className = "bg-retroPink border-2 border-white text-white px-3 py-1.5 rounded shadow-retroPink hover:bg-white hover:text-retroPink transition duration-200 flex items-center space-x-1 text-xs font-pressStart arcade-btn";
+      } else {
+        icon.textContent = "📝";
+        label.textContent = "โหมดปกติ (OFF)";
+        btn.className = "bg-black/60 border-2 border-retroBorder text-gray-400 px-3 py-1.5 rounded shadow-retro hover:border-gray-400 hover:text-white transition duration-200 flex items-center space-x-1 text-xs font-pressStart arcade-btn";
+      }
+      
+      applyHackModeLayout();
+      playSound('click');
+    }
+
+    function setHackMode(val) {
+      if (state.hackMode !== val) {
+        toggleHackMode();
+      }
+    }
+
+    function applyHackModeLayout() {
+      const avatarCol = document.getElementById('avatar-card').parentElement;
+      const quizCol = document.getElementById('options-container').parentElement.parentElement;
+      const alertBanner = document.getElementById('police-alert-banner');
+      
+      // Update welcome screen buttons if visible
+      const btnOn = document.getElementById('welcome-hack-on');
+      const btnOff = document.getElementById('welcome-hack-off');
+      if (btnOn && btnOff) {
+        if (state.hackMode) {
+          btnOn.className = "px-3.5 py-2 border-2 border-retroPink bg-retroPink text-white text-xs font-pressStart shadow-retroPink rounded cursor-pointer arcade-btn";
+          btnOff.className = "px-3.5 py-2 border-2 border-retroBorder bg-black/40 text-gray-400 text-xs font-pressStart rounded cursor-pointer arcade-btn";
+        } else {
+          btnOn.className = "px-3.5 py-2 border-2 border-retroBorder bg-black/40 text-gray-400 text-xs font-pressStart rounded cursor-pointer arcade-btn";
+          btnOff.className = "px-3.5 py-2 border-2 border-retroCyan bg-black/80 text-retroCyan text-xs font-pressStart shadow-retroCyan rounded cursor-pointer arcade-btn";
+        }
+      }
+
+      if (state.hackMode) {
+        avatarCol.classList.remove('hidden');
+        quizCol.classList.remove('lg:col-span-12');
+        quizCol.classList.add('lg:col-span-8');
+        
+        // Let updateAvatarCard re-evaluate visual status
+        updateAvatarCard();
+      } else {
+        avatarCol.classList.add('hidden');
+        quizCol.classList.remove('lg:col-span-8');
+        quizCol.classList.add('lg:col-span-12');
+        
+        // Instantly hide all wanted overlays
+        alertBanner.classList.add('hidden');
+        document.getElementById('police-peering-overlay').style.opacity = "0";
+        document.getElementById('siren-overlay-red').style.opacity = "0";
+        document.getElementById('siren-overlay-blue').style.opacity = "0";
+        document.getElementById('siren-overlay-red').classList.remove('animate-siren-red');
+        document.getElementById('siren-overlay-blue').classList.remove('animate-siren-blue');
+      }
+    }
+  </script>
+</body>
+</html>
